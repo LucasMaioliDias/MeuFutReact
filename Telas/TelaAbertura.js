@@ -3,9 +3,11 @@ import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import COLORS from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TelaAbertura = () => {
   const navigation = useNavigation();
+  
   return (
     <LinearGradient
       style={{ flex: 1 }}
@@ -112,7 +114,7 @@ const TelaAbertura = () => {
             <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('TelaLogin')}
 >
               <Text style={styles.btnText}>Entrar</Text>
-                <Image source={require('../assets/seta-direita.png')} style={styles.btnImage}/>
+              <Ionicons name="chevron-forward-outline" size={32} color="black" />
             </TouchableOpacity>
           </View>
             <View style={styles.containerTexto}>

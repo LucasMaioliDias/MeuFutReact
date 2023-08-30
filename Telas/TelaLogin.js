@@ -52,7 +52,7 @@ const TelaLogin = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={Styles.btn}>
+        <TouchableOpacity style={Styles.btn} onPress={() => navigation.navigate('TelaMenu')}>
           <Text style={Styles.btnText}>Entrar</Text>
         </TouchableOpacity>
         <View style={{flexDirection:'row',alignItems:'center',marginVertical:15}}> 
@@ -71,7 +71,7 @@ const TelaLogin = () => {
         </View>
         <View style={{justifyContent:'center',flexDirection:'row',marginVertical:22}}>
           <Text>Não tem uma conta?</Text>
-          <Text style={{marginHorizontal:4,fontWeight:'bold',color:COLORS.primary}} onPress={() => navigation.navigate('TelaLogin')}>cadastre-se</Text>
+          <Text style={{marginHorizontal:4,fontWeight:'bold',color:COLORS.primary}} onPress={() => navigation.navigate('TelaCadastro')}>cadastre-se</Text>
         </View>
       </View>
       

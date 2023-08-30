@@ -51,7 +51,7 @@ const TelaCadastro = () => {
         </View>
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Telefone</Text>
-          <View style={Styles.containerInput}>
+          <View style={[Styles.containerInput]}>
             <TextInput
               placeholder="+55"
               placeholderTextColor={Colors.black}
@@ -59,7 +59,7 @@ const TelaCadastro = () => {
               style={{
                 width: '12%',
                 borderRigthWidth:1,
-                borderRightColor:COLORS.black,
+                borderRigthColor:COLORS.black,
                 height:"100%"
               }}
             />
@@ -107,8 +107,8 @@ const TelaCadastro = () => {
           </TouchableOpacity>
         </View>
         <View style={{justifyContent:'center',flexDirection:'row',marginVertical:22}}>
-          <Text>Já tem uma conta</Text>
-          <Text style={{marginHorizontal:4,fontWeight:'bold',color:COLORS.primary}} onPress={() => navigation.navigate('TelaLogin')}>Logue</Text>
+          <Text>Já tem uma conta!!</Text>
+          <Text style={{marginHorizontal:4,fontWeight:'bold',color:COLORS.primary}} onPress={() => navigation.navigate('TelaLogin')}>Entre</Text>
         </View>
       </View>
       
@@ -141,8 +141,7 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     flexDirection:'row',
-    justifyContent: 'space-between',
-    paddingLeft: 22,
+    paddingLeft: 20,
   },
   btnImage:{
     height:25,
