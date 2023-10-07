@@ -4,6 +4,7 @@ import TelaCadastro from './TelaCadastro';
 import TelaLogin from './TelaLogin';
 import TelaMenu from './TelaMenu';
 import TelaDetalhes from './TelaDetalhes';
+import TelaMaps from './TelaMaps';
 
 
 export {
@@ -13,4 +14,5 @@ export {
     TelaLogin,
     TelaMenu,
     TelaDetalhes,
+    TelaMaps,
 }
