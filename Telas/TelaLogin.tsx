@@ -7,6 +7,8 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useNavigation } from '@react-navigation/native';
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from 'react';
+import React, {useState} from 'react';
+import { StatusBar } from 'expo-status-bar';
 
 
 type FormData = {
@@ -25,8 +27,11 @@ const TelaLogin = () => {
   useEffect(() => console.log('Senha errors', errors?.senha), [errors?.senha]);
   useEffect(() => console.log('Email errors', errors?.email), [errors?.email]);
 
+  const [hidepass,setHidePass] = useState(true)
+
   return (
     <SafeAreaView style={Styles.container}>
+      <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
       <View style={{ marginVertical: 22 }}>
         <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
           <Text style={Styles.txt}>Bem vindo             </Text>
@@ -86,15 +91,19 @@ const TelaLogin = () => {
                   onChangeText={onChange}
                   placeholder="Insira sua Senha"
                   placeholderTextColor={Colors.black}
-                  secureTextEntry
+                  secureTextEntry={hidepass}
                   style={{
                     width: '100%',
                   }}
                 />
               )}
             />
-            <TouchableOpacity style={Styles.btnAbrir} >
-
+            <TouchableOpacity style={Styles.btnAbrir} onPress={() => setHidePass(!hidepass)}>
+              {hidepass ?
+              <Ionicons name="eye-off-outline" size={20} color='black' />
+              :
+              <Ionicons name="eye-outline" size={20} color='black' />
+              }
             </TouchableOpacity>
           </View>
           {errors.senha && (
@@ -107,6 +116,7 @@ const TelaLogin = () => {
         <TouchableOpacity style={Styles.btn} onPress={() => {
           Keyboard.dismiss();
           handleSubmit(onsubmit)();
+          navigation.navigate("TelaMenu")
         }}>
           <Text style={Styles.btnText}>Entrar</Text>
         </TouchableOpacity>

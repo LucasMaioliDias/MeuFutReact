@@ -3,19 +3,22 @@ import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import React, {useState} from 'react';
+import { StatusBar } from 'expo-status-bar';
 
 type FormCadastro = {
   nome: string;
   email: string;
   senha: string;
   telefone: number;
+  ddd: Number;
 };
+
+
 
 
 const TelaCadastro = () => {
@@ -29,9 +32,15 @@ const TelaCadastro = () => {
   useEffect(() => console.log('Email errors', errors?.email), [errors?.email]);
   useEffect(() => console.log('Name errors', errors?.nome), [errors?.nome]);
   useEffect(() => console.log('Phone errors', errors?.telefone), [errors?.telefone]);
+  useEffect(() => console.log('ddd errors', errors?.ddd), [errors?.ddd]);
+
+  const [hidepass,setHidePass] = useState(true)
+
+
 
   return (
     <SafeAreaView style={Styles.container}>
+      <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
       <View style={{ marginVertical: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <Text style={Styles.txt}>Criar Conta</Text>
@@ -108,25 +117,38 @@ const TelaCadastro = () => {
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Telefone</Text>
           <View style={[Styles.containerInput]}>
-            <TextInput
-              placeholder="+55"
-              placeholderTextColor={Colors.black}
-              keyboardType="numeric"
-              style={{
-                width: '12%',
-                height: "100%",
-              }}
-            />
-            <TextInput
-              placeholder='Insira seu numero de telefone'
-              placeholderTextColor={Colors.black}
-              keyboardType="numeric"
 
-              style={{
-                width: "80%"
+            <Controller
+              name="telefone"
+              control={control}
+              rules={{
+                required: "Telefone obrigatorio",
+                minLength: {
+                  value: 11,
+                  message: "Telefone invalido",
+                },
+
               }}
+              render={({ field: { value, onChange } }) => (
+                <TextInput
+                  placeholder='Insira seu numero de telefone'
+                  placeholderTextColor={Colors.black}
+                  keyboardType="numeric"
+                  onChangeText={onChange}
+                  maxLength={11}
+                  style={{
+                    width: "100%"
+                  }}
+                />
+              )}
             />
           </View>
+          {errors.telefone && (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="alert-circle-outline" size={15} color='red' />
+              <Text style={Styles.erro}>{errors.telefone?.message}</Text>
+            </View>
+          )}
         </View>
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Senha</Text>
@@ -148,15 +170,19 @@ const TelaCadastro = () => {
                   onChangeText={onChange}
                   placeholder="Insira sua Senha"
                   placeholderTextColor={Colors.black}
-                  secureTextEntry
+                  secureTextEntry={hidepass}
                   style={{
-                    width: '100%',
+                    width: '80%',
                   }}
                 />
               )}
             />
-            <TouchableOpacity style={Styles.btnAbrir} >
-
+            <TouchableOpacity style={Styles.btnAbrir} onPress={() => setHidePass(!hidepass)}>
+              {hidepass ?
+              <Ionicons name="eye-off-outline" size={20} color='black' />
+              :
+              <Ionicons name="eye-outline" size={20} color='black' />
+              }
             </TouchableOpacity>
           </View>
           {errors.senha && (
@@ -173,18 +199,6 @@ const TelaCadastro = () => {
           <Text style={Styles.btnText}>Cadastrar</Text>
         </TouchableOpacity>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
-          <View style={{ flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10 }}>
-          </View>
-          <Text style={{ fontSize: 14 }}>Acesso rápido com</Text>
-          <View style={{ flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10 }}></View>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity style={Styles.btnLogo}>
-            <Image source={require('../assets/google.png')} style={Styles.imgLogo} resizeMode='contain' />
-          </TouchableOpacity>
-          <TouchableOpacity style={Styles.btnLogo}>
-            <Image source={require('../assets/facebook.png')} style={Styles.imgLogo} resizeMode='contain' />
-          </TouchableOpacity>
         </View>
         <View style={{ justifyContent: 'center', flexDirection: 'row', marginVertical: 22 }}>
           <Text>Já tem uma conta!!</Text>
@@ -231,6 +245,9 @@ const Styles = StyleSheet.create({
     position: 'absolute',
     right: 12,
     alignSelf: 'center',
+    height:'100%',
+    alignItems:'center',
+    justifyContent:'center'
   },
   btn: {
     justifyContent: 'center',

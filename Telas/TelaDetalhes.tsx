@@ -4,7 +4,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import COLORS from '../constants/colors';
 import { StatusBar } from 'expo-status-bar';
-
 const TelaDetalhes = ({ navigation, route }) => {
   const Quadras = route.params;
 
@@ -44,7 +43,7 @@ const TelaDetalhes = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   fixedButton: {
     position: 'absolute',
-    top: 20,
+    top: 25,
     left: 20,
     zIndex: 1,
     backgroundColor:'white',
