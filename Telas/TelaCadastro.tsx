@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 type FormCadastro = {
@@ -34,7 +34,7 @@ const TelaCadastro = () => {
   useEffect(() => console.log('Phone errors', errors?.telefone), [errors?.telefone]);
   useEffect(() => console.log('ddd errors', errors?.ddd), [errors?.ddd]);
 
-  const [hidepass,setHidePass] = useState(true)
+  const [hidepass, setHidePass] = useState(true)
 
 
 
@@ -49,6 +49,9 @@ const TelaCadastro = () => {
         <View style={{ marginBottom: 10 }}>
           <Text style={Styles.textInput}>Nome</Text>
           <View style={Styles.containerInput}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: '10%', }}>
+              <Ionicons name="person-outline" size={18} color={COLORS.black} />
+            </View>
             <Controller
               name="nome"
               control={control}
@@ -67,7 +70,8 @@ const TelaCadastro = () => {
                   onChangeText={onChange}
                   value={value}
                   style={{
-                    width: '100%',
+                    width: '90%',
+                    marginStart: 8,
                   }}
                 />
               )}
@@ -83,6 +87,9 @@ const TelaCadastro = () => {
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Email</Text>
           <View style={Styles.containerInput}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: '10%', }}>
+              <Ionicons name="mail-outline" size={18} color={COLORS.black} />
+            </View>
             <Controller
               name="email"
               control={control}
@@ -101,7 +108,8 @@ const TelaCadastro = () => {
                   onChangeText={onChange}
                   value={value}
                   style={{
-                    width: '100%',
+                    width: '90%',
+                    marginStart: 8,
                   }}
                 />
               )}
@@ -117,7 +125,9 @@ const TelaCadastro = () => {
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Telefone</Text>
           <View style={[Styles.containerInput]}>
-
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: '10%', }}>
+              <Ionicons name="phone-portrait-outline" size={18} color={COLORS.black} />
+            </View>
             <Controller
               name="telefone"
               control={control}
@@ -137,7 +147,8 @@ const TelaCadastro = () => {
                   onChangeText={onChange}
                   maxLength={11}
                   style={{
-                    width: "100%"
+                    width: "90%",
+                    marginStart: 8,
                   }}
                 />
               )}
@@ -153,6 +164,9 @@ const TelaCadastro = () => {
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Senha</Text>
           <View style={Styles.containerInput}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: '10%', }}>
+              <Ionicons name="lock-closed-outline" size={18} color={COLORS.black} />
+            </View>
             <Controller
               name="senha"
               control={control}
@@ -172,16 +186,17 @@ const TelaCadastro = () => {
                   placeholderTextColor={Colors.black}
                   secureTextEntry={hidepass}
                   style={{
-                    width: '80%',
+                    width: '90%',
+                    marginStart: 8,
                   }}
                 />
               )}
             />
             <TouchableOpacity style={Styles.btnAbrir} onPress={() => setHidePass(!hidepass)}>
               {hidepass ?
-              <Ionicons name="eye-off-outline" size={20} color='black' />
-              :
-              <Ionicons name="eye-outline" size={20} color='black' />
+                <Ionicons name="eye-off-outline" size={20} color='black' />
+                :
+                <Ionicons name="eye-outline" size={20} color='black' />
               }
             </TouchableOpacity>
           </View>
@@ -235,7 +250,7 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     flexDirection: 'row',
-    paddingLeft: 20,
+    //paddingLeft: 20,
   },
   btnImage: {
     height: 25,
@@ -245,9 +260,9 @@ const Styles = StyleSheet.create({
     position: 'absolute',
     right: 12,
     alignSelf: 'center',
-    height:'100%',
-    alignItems:'center',
-    justifyContent:'center'
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   btn: {
     justifyContent: 'center',

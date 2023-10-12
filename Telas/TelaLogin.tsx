@@ -7,7 +7,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useNavigation } from '@react-navigation/native';
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from 'react';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 
@@ -27,19 +27,23 @@ const TelaLogin = () => {
   useEffect(() => console.log('Senha errors', errors?.senha), [errors?.senha]);
   useEffect(() => console.log('Email errors', errors?.email), [errors?.email]);
 
-  const [hidepass,setHidePass] = useState(true)
+  const [hidepass, setHidePass] = useState(true)
 
   return (
     <SafeAreaView style={Styles.container}>
       <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
       <View style={{ marginVertical: 22 }}>
-        <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-          <Text style={Styles.txt}>Bem vindo             </Text>
+        <View style={{ justifyContent: 'center' }}>
           <Image source={require('../assets/logo.png')} style={{ height: 90, width: 90 }} />
+          <Text style={Styles.txt}>Bem vindo</Text>
+          <Text style={Styles.txt}>Bem vindo</Text>
         </View>
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Email</Text>
           <View style={Styles.containerInput}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: '10%', }}>
+              <Ionicons name="person-outline" size={18} color={COLORS.black} />
+            </View>
             <Controller
               name="email"
               control={control}
@@ -51,6 +55,7 @@ const TelaLogin = () => {
                 }
               }}
               render={({ field: { value, onChange } }) => (
+
                 <TextInput
                   placeholder="Insira seu email"
                   placeholderTextColor={Colors.black}
@@ -58,7 +63,8 @@ const TelaLogin = () => {
                   onChangeText={onChange}
                   value={value}
                   style={{
-                    width: '100%',
+                    width: '90%',
+                    marginStart: 8
                   }}
                 />
               )}
@@ -74,6 +80,9 @@ const TelaLogin = () => {
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Senha</Text>
           <View style={Styles.containerInput}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', width: '10%', }}>
+              <Ionicons name="lock-closed-outline" size={18} color={COLORS.black} />
+            </View>
             <Controller
               name="senha"
               control={control}
@@ -83,7 +92,7 @@ const TelaLogin = () => {
                   value: 3,
                   message: "Sua senha deve ter pelo menos 3 caracteres",
                 },
-                
+
               }}
               render={({ field: { value, onChange } }) => (
                 <TextInput
@@ -93,16 +102,18 @@ const TelaLogin = () => {
                   placeholderTextColor={Colors.black}
                   secureTextEntry={hidepass}
                   style={{
-                    width: '100%',
+                    width: '90%',
+                    marginStart: 8
+
                   }}
                 />
               )}
             />
             <TouchableOpacity style={Styles.btnAbrir} onPress={() => setHidePass(!hidepass)}>
               {hidepass ?
-              <Ionicons name="eye-off-outline" size={20} color='black' />
-              :
-              <Ionicons name="eye-outline" size={20} color='black' />
+                <Ionicons name="eye-off-outline" size={20} color='black' />
+                :
+                <Ionicons name="eye-outline" size={20} color='black' />
               }
             </TouchableOpacity>
           </View>
@@ -152,9 +163,7 @@ const Styles = StyleSheet.create({
   txt: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginVertical: 12,
     color: COLORS.black,
-    marginRight: 130
 
 
   },
@@ -171,7 +180,7 @@ const Styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingLeft: 22,
+    //paddingLeft: 22,
   },
   btnImage: {
     height: 25,

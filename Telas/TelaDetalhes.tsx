@@ -25,15 +25,17 @@ const TelaDetalhes = ({ navigation, route }) => {
         contentBackgroundColor={COLORS.white}
         parallaxHeaderHeight={300}
         renderBackground={() => <Image source={Quadras.image} style={{ height: '100%', width: '100%' }} />}
-        stickyHeaderHeight={70}
+        stickyHeaderHeight={75}
         renderStickyHeader={() => (
           <View key="stick-header" style={styles.stickyHeader}>
-            {/* Conteúdo do cabeçalho pegajoso */}
+            <Text style={{fontSize:20,color:'white',fontWeight:'900',}}>Quadra {Quadras.name}</Text>
           </View>
         )}
       >
         <View style={{ height: 500 }}>
-          {/* Conteúdo da tela */}
+          <TouchableOpacity style={{height:50,backgroundColor:COLORS.primary}} onPress={() => navigation.navigate("TelaAgendamento")}>
+
+          </TouchableOpacity>
         </View>
       </ParallaxScrollView>
     </SafeAreaView>
@@ -54,6 +56,8 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   stickyHeader: {
+    height:'100%',
+    width:'100%',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 25,
