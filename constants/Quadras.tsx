@@ -3,7 +3,7 @@ const Quadras = [
       id: '1',
       name: 'Carpineli',
       location: 'Campo Limpo',
-      image: require('../assets/leme.jpeg'),
+      image: require('../assets/QuadraFortaleza.png'),
       details: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Consequat nisl vel pretium lectus quam id leo. Velit euismod in pellentesque massa placerat duis ultricies lacus sed. Justo laoreet sit amet cursus sit.`,
       price:'75,00',
     },

@@ -10,7 +10,7 @@ const { width } = Dimensions.get('screen');
 const Carrosel = ({ Quadras }) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity style={{width:260,height:250,
+    <TouchableOpacity style={{width:"100%",height:250,
     borderRadius:10,
     borderWidth:1,
     borderColor:COLORS.LIGHT_GRAY,

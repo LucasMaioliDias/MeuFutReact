@@ -9,6 +9,7 @@ import TelaMaps from './TelaMaps';
 import TelaAgendamento from './TelaAgendamento';
 import TelaPagamento from './TelaPagamento';
 import TelaConfirmacao from './TelaConfirmacao';
+import TelaAgendadas from './TelaAgendadas';
 
 
 
@@ -23,5 +24,6 @@ export   {
     TelaAgendamento,
     TelaPagamento,
     TelaConfirmacao,
+    TelaAgendadas,
 }
 

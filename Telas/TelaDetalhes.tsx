@@ -1,66 +1,50 @@
-import React, { useLayoutEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, SafeAreaView, Dimensions } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import COLORS from '../constants/colors';
+import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-const TelaDetalhes = ({ navigation, route }) => {
-  const Quadras = route.params;
 
-  // Função para lidar com o pressionamento do botão (adicione ação desejada)
-  const handleButtonPress = () => {
-    // Coloque a ação desejada aqui
-  };
+const TelaDetalhes = ({  route }) => {
+  const Quadras = route.params;
+  const { width, height } = Dimensions.get('screen');
+  const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <SafeAreaView style={{ flex: 1,  }}>
       <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
-      {/* Botão fixo no topo */}
-      <TouchableOpacity style={styles.fixedButton} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={24} color={COLORS.secondary} />
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
       </TouchableOpacity>
+      <ImageBackground source={require('../assets/QuadraFortaleza.png')} style={{ height: height / 3, width: '100%' }}>
+        </ImageBackground>
+      <View style={{ marginTop: -20, backgroundColor: COLORS.white, borderTopLeftRadius: 20, borderTopRightRadius: 20, height: 100 }}>
+        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate("TelaAgendamento")}>
 
-      <ParallaxScrollView
-        backgroundColor={COLORS.primary}
-        contentBackgroundColor={COLORS.white}
-        parallaxHeaderHeight={300}
-        renderBackground={() => <Image source={Quadras.image} style={{ height: '100%', width: '100%' }} />}
-        stickyHeaderHeight={75}
-        renderStickyHeader={() => (
-          <View key="stick-header" style={styles.stickyHeader}>
-            <Text style={{fontSize:20,color:'white',fontWeight:'900',}}>Quadra {Quadras.name}</Text>
-          </View>
-        )}
-      >
-        <View style={{ height: 500 }}>
-          <TouchableOpacity style={{height:50,backgroundColor:COLORS.primary}} onPress={() => navigation.navigate("TelaAgendamento")}>
-
-          </TouchableOpacity>
-        </View>
-      </ParallaxScrollView>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  fixedButton: {
+  backButton: {
     position: 'absolute',
-    top: 25,
-    left: 20,
+    top: 30,
+    left: 25,
     zIndex: 1,
-    backgroundColor:'white',
-    height:40,
-    width:40,
-    borderRadius:20,
-    justifyContent:'center',
-    alignItems:'center',
+   // height:50,
+   // width:50,
+    //borderRadius:99,
+   // backgroundColor:COLORS.white,
+    //opacity: 0.3
+    //justifyContent:'center',
+    //alignItems:'center',
   },
-  stickyHeader: {
-    height:'100%',
-    width:'100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 25,
+  btn:{
+    height:100,
+    width:"100%",
+    backgroundColor:COLORS.primary
   },
 });
 

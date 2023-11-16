@@ -36,7 +36,7 @@ const TelaLogin = () => {
         <View style={{ justifyContent: 'center' }}>
           <Image source={require('../assets/logo.png')} style={{ height: 90, width: 90 }} />
           <Text style={Styles.txt}>Bem vindo</Text>
-          <Text style={Styles.txt}>Bem vindo</Text>
+          
         </View>
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Email</Text>

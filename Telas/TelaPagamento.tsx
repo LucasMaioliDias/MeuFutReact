@@ -1,4 +1,4 @@
-import { View, SafeAreaView, TouchableHighlight, TouchableOpacity, Text, StyleSheet, Image, Touchable } from 'react-native';
+import { View, SafeAreaView, Dimensions, TouchableOpacity, Text, StyleSheet, Image, Touchable } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import COLORS from '../constants/colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -9,7 +9,7 @@ import MapView, { Marker } from 'react-native-maps';
 import React, { useState } from 'react';
 
 
-
+const { width,height } = Dimensions.get('screen');
 
 
 const TelaPagamento = () => {
@@ -38,10 +38,10 @@ const TelaPagamento = () => {
                     <View style={{ height: 5, width: '100%', backgroundColor: COLORS.LIGHT_GRAY, marginTop: 4, marginStart: 8 }}></View>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 3 }}>
-                    <View style={{ flexDirection: 'row', padding: 5, width: '50%', height: 40 }}>
+                    <View style={{ flexDirection: 'row', padding: 5, width: '50%', height: height / 19 }}>
                         <Text style={{ marginTop: 6, color: COLORS.black }}>Horario</Text>
                     </View>
-                    <View style={{ width: '50%', height: 40, alignItems: 'flex-end', paddingTop: 8 }}>
+                    <View style={{ width: '50%', height: height / 18, alignItems: 'flex-end', paddingTop: 8 }}>
                         <Text style={{ fontSize: 15 }}>
                             09:00 às 10:00
                         </Text>
@@ -51,16 +51,16 @@ const TelaPagamento = () => {
                     </View>
                 </View>
                 <View style={{ height: 2, width: '100%', backgroundColor: COLORS.LIGHT_GRAY }}></View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5, height: 30, alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5, height:height / 26, alignItems: 'center' }}>
                     <Text>Data:</Text>
                     <Text>Quinta,12 de outubro 2023</Text>
                 </View>
                 <View style={{ height: 2, width: '100%', backgroundColor: COLORS.LIGHT_GRAY }}></View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 3 }}>
-                    <View style={{ flexDirection: 'row', padding: 5, width: '50%', height: 40 }}>
+                    <View style={{ flexDirection: 'row', padding: 5, width: '50%', height: height / 26 }}>
                         <Text style={{ marginTop: 6, color: COLORS.black }}>Local</Text>
                     </View>
-                    <View style={{ width: '50%', height: 40, alignItems: 'flex-end', paddingTop: 8 }}>
+                    <View style={{ width: '50%', height: height / 26, alignItems: 'flex-end', paddingTop: 8 }}>
                         <Text style={{ fontSize: 15 }}>
                             Campo Carpinelli
                         </Text>
@@ -74,7 +74,7 @@ const TelaPagamento = () => {
                     </View>
                 </View>
                 <View style={{ borderRadius: 20, overflow: 'hidden', marginTop: 30 }}>
-                    <MapView style={{ height: 180, width: "100%", }} initialRegion={{
+                    <MapView style={{ height: height / 4.5, width: "100%", }} initialRegion={{
                         latitude,
                         longitude,
                         latitudeDelta: 0.005,
@@ -96,7 +96,7 @@ const TelaPagamento = () => {
                     </Text>
                     <View style={{ height: 5, width: '100%', backgroundColor: COLORS.LIGHT_GRAY, marginTop: 4, marginStart: 8 }}></View>
                 </View>
-                <View style={{ paddingVertical: 20, height: 200 }}>
+                <View style={{ paddingVertical: 20, height: height / 4.5  }}>
 
                     <TouchableOpacity style={buttonStyle} onPress={handleButtonClick}>
                         <View style={{ height: '100%', width: "15%", justifyContent: 'center', alignItems: 'center' }}>
@@ -110,7 +110,8 @@ const TelaPagamento = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={{ flex: 1, paddingHorizontal: 10, borderTopWidth: 1, borderColor: COLORS.LIGHT_GRAY, paddingTop: 8 }}>
+            
+            <View style={{ flex: 1, paddingHorizontal: 10, borderTopWidth: 1, borderColor: COLORS.LIGHT_GRAY, paddingTop: 8}}>
                 <Text style={{ fontWeight: 'bold', }}>
                     Resumo dos valores
                 </Text>
@@ -137,6 +138,7 @@ const TelaPagamento = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+            
         </SafeAreaView>
     );
 }
@@ -145,7 +147,7 @@ const TelaPagamento = () => {
 const styles = StyleSheet.create({
     btn: {
         width: '100%',
-        height: 55,
+        height: height / 16,
         borderWidth: 1,
         borderColor: COLORS.LIGHT_GRAY,
         borderRadius: 5,
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
     },
     agendar: {
         width: "100%",
-        height: 55,
+        height: height / 16,
         backgroundColor: COLORS.secondary,
         marginTop: 15,
         borderRadius: 5,

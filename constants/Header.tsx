@@ -1,10 +1,10 @@
-import { View, TouchableOpacity, StyleSheet,Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet,Text ,Dimensions} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StatusBar } from 'expo-status-bar';
 import COLORS from './colors';
 import { useNavigation } from '@react-navigation/native';
 
-
+const { width,height } = Dimensions.get('screen');
 
 const Header = ({title}) => {
     const navigation = useNavigation();
@@ -26,7 +26,7 @@ const Header = ({title}) => {
 const styles = StyleSheet.create({
 
     container: {
-        height: 80,
+        height: height / 11,
         borderBottomWidth: 1,
         borderColor: COLORS.LIGHT_GRAY,
         justifyContent: 'space-between',
