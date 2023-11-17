@@ -46,17 +46,41 @@ const TelaAgendamento = () => {
         setData((prevData) => {
             const newData = prevData.map((item) =>
                 item.id === itemId ? { ...item, selected: !item.selected } : item
-                
             );
-            const newSelectedCount = newData.filter((item) => item.selected).length;
-            setSelectedCount(newSelectedCount);
+
+            const selectedItems = newData.filter((item) => item.selected);
+            setSelectedCount(selectedItems.length);
+
+            if (selectedItems.length > 0) {
+                const minSelectedIndex = Math.min(
+                    ...selectedItems.map((item) => Number(item.id))
+                );
+                const maxSelectedIndex = Math.max(
+                    ...selectedItems.map((item) => Number(item.id))
+                );
+
+                newData.forEach((item) => {
+                    // Habilita os horários adjacentes aos horários mínimo e máximo selecionados
+                    item.habilitado = (
+                        Math.abs(Number(item.id) - minSelectedIndex) === 1 ||
+                        Math.abs(Number(item.id) - maxSelectedIndex) === 1
+                    );
+                });
+            } else {
+                // Se nenhum horário estiver selecionado, habilitar todos
+                newData.forEach((item) => {
+                    item.habilitado = true;
+                });
+            }
+
             return newData;
-            
         });
-        
+    };
+
+
     
 
-    };
+ 
 
     const handleDateSelected = (date) => { 
         setSelectedDate(date);
@@ -73,7 +97,7 @@ const TelaAgendamento = () => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             
-           <Header title="teste" />
+           <Header title="Selecione o Horario " />
             <View style={{ height: 112, }}>
                 <CalendarStrip
                     scrollable
@@ -147,8 +171,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.LIGHT_GRAY,
         flexDirection: 'row',
-        //paddingHorizontal:20,
-        //paddingVertical:10
+       
     },
 
     informacoes: {

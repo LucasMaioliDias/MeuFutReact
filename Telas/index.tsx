@@ -5,7 +5,7 @@ import TelaCadastro from './TelaCadastro';
 import TelaLogin from './TelaLogin';
 import TelaMenu from './TelaMenu';
 import TelaDetalhes from './TelaDetalhes';
-import TelaMaps from './TelaMaps';
+import TelaEscolherTime from './TelaEscolherTime';
 import TelaAgendamento from './TelaAgendamento';
 import TelaPagamento from './TelaPagamento';
 import TelaConfirmacao from './TelaConfirmacao';
@@ -20,7 +20,7 @@ export   {
     TelaLogin,
     TelaMenu,
     TelaDetalhes,
-    TelaMaps,
+    TelaEscolherTime,
     TelaAgendamento,
     TelaPagamento,
     TelaConfirmacao,

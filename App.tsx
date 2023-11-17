@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TelaSplash, TelaAbertura, TelaCadastro, TelaLogin, TelaMenu, TelaDetalhes, TelaMaps, TelaAgendamento, TelaPagamento, TelaConfirmacao, TelaAgendadas } from './Telas';
+import { TelaSplash, TelaAbertura, TelaCadastro, TelaLogin, TelaMenu, TelaDetalhes, TelaEscolherTime, TelaAgendamento, TelaPagamento, TelaConfirmacao, TelaAgendadas } from './Telas';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +13,7 @@ declare global {
       TelaCadastro: undefined;
       TelaMenu: undefined;
       TelaDetalhes: undefined;
-      TelaMaps: undefined;
+      TelaEscolherTime: undefined;
       TelaAgendamento: undefined;
       TelaPagamento: undefined;
       TelaConfirmacao: undefined;
@@ -28,7 +28,7 @@ export default function App() {
 
 
       <Stack.Navigator>
-
+{/*
         <Stack.Screen
           name="TelaSplash"
           component={TelaSplash}
@@ -48,15 +48,15 @@ export default function App() {
           name="TelaCadastro"
           component={TelaCadastro}
           options={{ headerShown: false }}
-        />
+        />*/}
         <Stack.Screen
           name="TelaMenu"
           component={TelaMenu}
           options={{ headerShown: false }}
-        />
+  />
         <Stack.Screen
-          name="TelaMaps"
-          component={TelaMaps}
+          name="TelaEscolherTime"
+          component={TelaEscolherTime}
           options={{ headerShown: false }}
         />
 

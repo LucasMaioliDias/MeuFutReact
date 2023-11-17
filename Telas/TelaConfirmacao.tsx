@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 const TelaConfirmacao = () => {
     const navigation = useNavigation();
     const handleAnimationFinish = () => {
-        navigation.navigate('TelaMenu');
+        navigation.navigate('TelaAgendadas');
     };
     return (
         <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white', justifyContent:'center' }}>

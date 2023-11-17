@@ -47,7 +47,7 @@ const TelaMenu = () => {
       </View>
       <Text style={[styles.subTitulo, { marginVertical: 10 }]}>Categorias</Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <TouchableOpacity style={styles.containerQuadras}>
+        <TouchableOpacity style={styles.containerQuadras} onPress={() => navigation.navigate('TelaEscolherTime')}>
           <View style={styles.icon}>
             <Icon name="football" size={25} color={COLORS.primary} />
           </View>
@@ -67,7 +67,7 @@ const TelaMenu = () => {
         </TouchableOpacity>
         <View style={styles.containerQuadras}>
           <View style={styles.icon}>
-            <Icon name="navigate" size={25} color={COLORS.primary} onPress={() => navigation.navigate("TelaMaps")} />
+            <Icon name="navigate" size={25} color={COLORS.primary}  />
           </View>
           <Text style={{ fontSize: 14, color: COLORS.primary, fontWeight: 'bold', marginTop: 5 }}>Localizaçao</Text>
         </View>
@@ -77,14 +77,14 @@ const TelaMenu = () => {
         <Text style={styles.subTitulo}>Quadras</Text>
         <Text style={{ marginHorizontal: 20, marginVertical: 20, color: COLORS.secondary, fontSize: 15 }}>Ver Tudo</Text>
       </View>
-      <View>
+      <View>{/*
         <FlatList
           contentContainerStyle={{ paddingLeft: 20 }}
           data={Quadras}
           keyExtractor={item => item.id}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => <Carrosel Quadras={item} />}
-        />
+  />*/}
       </View>
 
     </SafeAreaView>

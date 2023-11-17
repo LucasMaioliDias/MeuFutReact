@@ -16,7 +16,7 @@ const Header = ({title}) => {
                     <Ionicons name="arrow-back" size={30} color={COLORS.secondary} style={{ marginTop: 13 }} />
                 </TouchableOpacity>
                 <View style={{height:'100%',width:'80%',justifyContent:'center',}}>
-                    <Text style={{marginTop:13,fontSize:20,fontWeight:'bold'}}>{title}</Text>
+                    <Text style={{marginTop:13,fontSize:20,fontWeight:'bold',color:COLORS.primary }}>{title}</Text>
                 </View>
             </View>
         </View>
