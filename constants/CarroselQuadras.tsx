@@ -1,72 +1,73 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Text} from 'react-native';
-import Icon from '@expo/vector-icons/Ionicons';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Text, ImageBackground } from 'react-native';
+import Icon from '@expo/vector-icons/FontAwesome';
 import COLORS from './colors';
 
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('screen');
 
 const Carrosel = ({ Quadras }) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity style={{width:"100%",height:250,
-    borderRadius:10,
-    borderWidth:1,
-    borderColor:COLORS.LIGHT_GRAY,
-    marginRight:15}}
-    onPress={() => navigation.navigate('TelaDetalhes', Quadras)}
-    
+    <TouchableOpacity
+      style={{
+        width: '100%',
+        height: 100,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: COLORS.LIGHT_GRAY,
+        overflow: 'hidden',
+        marginBottom: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+
+      }}
+      onPress={() => navigation.navigate('TelaDetalhes', Quadras)}
     >
-      <Image style={styles.img} source={Quadras.image}/>
-      <View style={{padding:7}}>
-        <Text style={{fontWeight:'900',fontSize:20}}>{Quadras.name}</Text>
-        <View style={{justifyContent:'space-between',flexDirection:'row',marginTop:9}}>
-        <View style={{flexDirection:'row',marginTop:5}}>
-        <Icon name="location-sharp" size={12} color='red' />
-        <Text style={{color:'gray',fontWeight:'500'}}>{Quadras.location}</Text>
-        </View>
-        <View style={{flexDirection:'row'}}>
-        <Text style={{color:'gray',fontWeight:'500',marginRight:2}}>R$</Text>
-        <Text style={{color:'gray'}}>{Quadras.price}</Text>
-        </View>
-        </View>
+      <View style={{ width: '30%', height: '100%' }}>
+        <ImageBackground style={{ height: '100%' }} source={Quadras.image} />
       </View>
+      <View style={{ flex: 1, marginLeft: 10, paddingVertical: 10, width: '100%' }}>
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5, width: '100%', paddingEnd:20 }}>
+    <Text style={{ fontWeight: 'bold', fontSize: 20, letterSpacing: 1 }}>{Quadras.name}</Text>
+    <Text style={{ fontSize: 13, fontWeight: '500', color: COLORS.black }}>
+      R$ {Quadras.price}
+    </Text>
+  </View>
+  <Text style={{ fontSize: 13, fontWeight: '200' }}>{Quadras.location}</Text>
+  <View style={{ flexDirection: 'row' }}>
+  {Quadras.bath && (
+    <View style={styles.icon}>
+      <Icon name="shower" size={14} color={COLORS.primary} />
+    </View>
+  )}
+  {Quadras.barbecue && (
+    <View style={styles.icon}>
+      <Icon name="fire" size={14} color={COLORS.primary} />
+    </View>
+  )}
+</View>
+
+</View>
+
+
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    marginRight: 20,
+  icon: {
+    height: 30,
+    width: 30,
+    backgroundColor: COLORS.secondary,
+    marginTop: 10,
     borderRadius: 10,
-    overflow: 'hidden',
-    marginBottom: 20,
+    opacity: 0.5,
+    justifyContent: 'center',
     alignItems: 'center',
-    elevation:10,
-  },
-  cardImage: {
-    height: 300,
-    width: width ,
-    borderRadius: 10,
-    padding: 10,
-    alignItems: 'center',
-    
-     
-  },
-  infoContainer: {
-    height: 70,
-    width: 330,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    elevation:10,
-    opacity: 0.6
-  },
-  img:{
-    width:'100%',
-    height:170,
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10
+    marginEnd:8,
+
   },
 });
 

@@ -22,6 +22,7 @@ const TelaEscolherTime = () => {
   const [isSecondModalVisible, setSecondModalVisible] = useState(false);
   const [number, setNumber] = useState(0);
   const [teams, setTeams] = useState([]);
+  
 
 
 
@@ -314,6 +315,7 @@ const TelaEscolherTime = () => {
           <View style={{ flex: 1, paddingHorizontal: 10, paddingVertical: 20 }}>
             <FlatList
               data={teams}
+              
               renderItem={({ item, index }) => (
                 <View style={{ marginBottom: 20, borderRadius: 10, width: 370 }}>
                   <View style={{ alignItems: 'center', justifyContent: 'center', padding: 20, backgroundColor: 'red', borderRadius: 10 }}>
