@@ -29,18 +29,20 @@ const TelaMenu = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar translucent={false} backgroundColor={COLORS.primary} />
       <View style={styles.container}>
-        <View style={{ alignItems: 'center', justifyContent: 'center', bottom: 7, flexDirection: 'row', right: 8 }}>
+        <View style={{flexDirection:'row',height:'100%'}}>
+        <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row',height:'100%'}}>
           <EIcon name="shield" size={55} color={COLORS.white} />
           <View style={{ position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
             <Text style={{ fontSize: 30, color: COLORS.primary, fontWeight: 'bold' }}>LM</Text>
           </View>
         </View>
-        <View>
-          <Text style={{ right: 110, bottom: 6, color: COLORS.white, fontStyle: 'italic' }}>Fala, jogadô</Text>
+        <View style={{justifyContent:'center',alignItems:'center',height:'100%'}}>
+          <Text style={{color: COLORS.white, fontStyle: 'italic' }}>Fala, jogadô</Text>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.titulo}>MEU</Text>
             <Text style={[styles.titulo, { color: COLORS.secondary }]}>FUT</Text>
           </View>
+        </View>
         </View>
         <Icon name="notifications-outline" size={28} color={COLORS.white} />
       </View>
@@ -115,19 +117,19 @@ const TelaMenu = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     height: 70,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent:'space-between',
     alignItems: 'center',
     backgroundColor: COLORS.primary,
+    
 
   },
   titulo: {
     fontWeight: '900',
     fontSize: 22,
-    right: 110,
-    bottom: 6,
+
 
 
   },
