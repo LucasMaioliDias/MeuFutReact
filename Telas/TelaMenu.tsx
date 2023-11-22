@@ -64,7 +64,7 @@ const TelaMenu = () => {
         </View>
       </View>
       <Text style={[styles.subTitulo, { marginVertical: 10 }]}>Categorias</Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' ,paddingHorizontal:15}}>
         <TouchableOpacity style={styles.containerQuadras} onPress={() => navigation.navigate('TelaEscolherTime')}>
           <View style={styles.icon}>
             <Icon name="football" size={25} color={COLORS.primary} />
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
 
   },
   containerQuadras: {
-    marginHorizontal: 20,
+    
     alignItems: 'center',
     elevation: 12,
     opacity: 0.7

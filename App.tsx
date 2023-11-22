@@ -12,10 +12,10 @@ declare global {
       TelaLogin: undefined;
       TelaCadastro: undefined;
       TelaMenu: undefined;
-      TelaDetalhes: undefined;
+      TelaDetalhes:{nomeDaQuadra:String; localDaQuadra:String;ruaDaQuadra:String; preco:String; };
       TelaEscolherTime: undefined;
-      TelaAgendamento: undefined;
-      TelaPagamento: undefined;
+      TelaAgendamento: {nomeDaQuadra:String;localDaQuadra:String;ruaDaQuadra:String;preco:String; teste:number; selectedTimes:String[];selectedDate: string;formattedDate?: string;};
+      TelaPagamento: {nomeDaQuadra:String;localDaQuadra:String;ruaDaQuadra:String;preco:String;teste:number;selectedTimes:String[];selectedDate: string;formattedDate?: string;};
       TelaConfirmacao: undefined;
       TelaAgendadas: undefined;
     }
@@ -33,7 +33,7 @@ export default function App() {
           name="TelaSplash"
           component={TelaSplash}
           options={{ headerShown: false }}
-        />
+        />*/}
         <Stack.Screen
           name="TelaAbertura"
           component={TelaAbertura}
@@ -48,7 +48,7 @@ export default function App() {
           name="TelaCadastro"
           component={TelaCadastro}
           options={{ headerShown: false }}
-        />*/}
+        />
         <Stack.Screen
           name="TelaMenu"
           component={TelaMenu}

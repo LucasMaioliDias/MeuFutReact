@@ -4,10 +4,14 @@ import Header from '../constants/Header';
 import COLORS from '../constants/colors';
 import { FontAwesome } from '@expo/vector-icons';
 import Icon from '@expo/vector-icons/FontAwesome';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('screen');
 
 const TelaAgendadas = () => {
+    const navigation = useNavigation();
     const [hideAgenda, setHideAgenda] = useState(false);
     const [selectedSquare, setSelectedSquare] = useState(null);
     const handleSquarePress = (index) => {
@@ -15,11 +19,18 @@ const TelaAgendadas = () => {
     };
     return (
         <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
-            <Header title={"Quadras Agendadas"} />
+            <View>
+            <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
+            <View style={styles.teste1}>
+                <TouchableOpacity style={styles.teste2} onPress={() => navigation.navigate('TelaMenu')} >
+                    <Ionicons name="arrow-back" size={30} color={COLORS.secondary} style={{ marginTop: 13 }} />
+                </TouchableOpacity>
+                <View style={{height:'100%',width:'80%',justifyContent:'center',}}>
+                    <Text style={{marginTop:13,fontSize:20,fontWeight:'bold',color:COLORS.primary }}>Quadras Agendadas</Text>
+                </View>
+            </View>
+        </View>
             <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-
-
-
                 <View style={{ paddingHorizontal: 5, paddingVertical: 5, flexDirection: 'row' }} >
 
 
@@ -119,7 +130,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderColor: COLORS.LIGHT_GRAY,
-    }
+    },
+    teste1: {
+        height: height / 11,
+        borderBottomWidth: 1,
+        borderColor: COLORS.LIGHT_GRAY,
+        justifyContent: 'space-between',
+        flexDirection:'row',
+        
+    },
+    teste2: {
+        height: '100%',
+        width: '20%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        
+    },
+
 });
 
 export default TelaAgendadas;

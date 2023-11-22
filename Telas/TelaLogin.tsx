@@ -33,10 +33,9 @@ const TelaLogin = () => {
     <SafeAreaView style={Styles.container}>
       <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
       <View style={{ marginVertical: 22 }}>
-        <View style={{ justifyContent: 'center' }}>
-          <Image source={require('../assets/logo.png')} style={{ height: 90, width: 90 }} />
-          <Text style={Styles.txt}>Bem vindo</Text>
-          
+        <View style={{ justifyContent: 'center',alignItems:'center' }}>
+          <Image source={require('../assets/logo.png')} style={{ height: 100, width: 100 }} />
+          {/*<Text style={Styles.txt}>Bem vindo</Text>*/}
         </View>
         <View style={{ marginBottom: 12 }}>
           <Text style={Styles.textInput}>Email</Text>

@@ -13,7 +13,7 @@ import Quadras from '../constants/Quadras';
 
 
 
-const TelaAgendamento = () => {
+const TelaAgendamento = ({route}) => {
     const today = moment();
     const datesBlacklist = [];
     for (let i = 1; i < 31; i++) {
@@ -43,6 +43,7 @@ const TelaAgendamento = () => {
     ]);
     
     const handleSelectItem = (itemId) => {
+        
         setData((prevData) => {
             const newData = prevData.map((item) =>
                 item.id === itemId ? { ...item, selected: !item.selected } : item
@@ -77,19 +78,34 @@ const TelaAgendamento = () => {
         });
     };
 
+    const handleDateSelected = (date) => {
+        // Formatando a data no padrão desejado
+        const formattedDate = moment(date).format('dddd, DD MMMM YYYY');
+        console.log(formattedDate); 
 
-    
-
- 
-
-    const handleDateSelected = (date) => { 
         setSelectedDate(date);
         const newData = data.map((item) => ({ ...item, selected: false }));
-        
+
         setData(newData);
         setSelectedCount(0);
     };
+    
+    const handleGoToPayment = () => {
+        const selectedTimes = data
+            .filter(item => item.selected)
+            .map(item => item.text);
+    
+        // Obter a data formatada no padrão desejado
+        const formattedDate = moment(selectedDate).format('dddd, DD MMMM YYYY');
+        const { nomeDaQuadra,localDaQuadra,ruaDaQuadra,preco} = route.params;
+        const teste = selectedCount;
+        // Passar as informações para a tela de pagamento
+        navigation.navigate("TelaPagamento", {ruaDaQuadra,localDaQuadra,nomeDaQuadra,selectedTimes, selectedDate: formattedDate,preco,teste});
+    };
+    
+ 
 
+    
 
 
     
@@ -143,7 +159,7 @@ const TelaAgendamento = () => {
             {selectedCount > 0 &&
                 <View style={styles.container}>
                     <Text style={styles.headerText}>{`${selectedCount} Horários selecionados`}</Text>
-                    <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate("TelaPagamento")}>
+                    <TouchableOpacity style={styles.button}  onPress={handleGoToPayment}>
                         <Icon name="calendar-check-o" size={30} color={COLORS.secondary} />
                     </TouchableOpacity>
                 </View>

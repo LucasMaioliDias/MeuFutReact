@@ -117,6 +117,7 @@ const TelaAbertura = () => {
           <Ionicons name="chevron-forward-outline" size={32} color="black" />
         </TouchableOpacity>
       </View>
+      {/*
       <View style={styles.containerTexto}>
         <Text style={styles.txtcadastro} >
           Nao se cadastrou ainda?
@@ -124,7 +125,7 @@ const TelaAbertura = () => {
         <Text style={[styles.txtcadastro, { fontWeight: 'bold', marginStart: 3 }]} onPress={() => navigation.navigate('TelaCadastro')}>
           Login
         </Text>
-      </View>
+      </View>*/}
     </LinearGradient>
   );
 }

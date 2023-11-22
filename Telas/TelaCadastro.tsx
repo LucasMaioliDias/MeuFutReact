@@ -215,7 +215,7 @@ const TelaCadastro = () => {
         </TouchableOpacity>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
         </View>
-        <View style={{ justifyContent: 'center', flexDirection: 'row', marginVertical: 22 }}>
+        <View style={{ justifyContent: 'center', flexDirection: 'row'}}>
           <Text>Já tem uma conta!!</Text>
           <Text style={{ marginHorizontal: 4, fontWeight: 'bold', color: COLORS.primary }} onPress={() => navigation.navigate("TelaLogin")}>Entre</Text>
         </View>
@@ -272,7 +272,7 @@ const Styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     padding: 20,
     marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 5,
     alignSelf: 'center',
     borderRadius: 10,
   },

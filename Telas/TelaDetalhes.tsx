@@ -7,12 +7,25 @@ import { StatusBar } from 'expo-status-bar';
 import Icon from '@expo/vector-icons/FontAwesome';
 import MapView, { Marker } from 'react-native-maps';
 
+
 const TelaDetalhes = ({ route }) => {
   const Quadras = route.params;
   const { width, height } = Dimensions.get('screen');
   const navigation = useNavigation();
   const latitude = Quadras.latitude;
   const longitude = Quadras.longitude;
+  
+
+  const handleGoBackToAgendamento = () => {
+    const nomeDaQuadra = Quadras.name;
+    const localDaQuadra = Quadras.location;
+    const ruaDaQuadra = Quadras.street;
+    const preco = Quadras.price;
+  
+    navigation.navigate("TelaAgendamento", {ruaDaQuadra,localDaQuadra,nomeDaQuadra,preco});
+  };
+  
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -41,8 +54,8 @@ const TelaDetalhes = ({ route }) => {
         </View>
         <View style={{ marginTop: 10 }}>
           <Text style={{ fontSize: 18, marginBottom: 5, fontWeight: '600', color: COLORS.primary }}>Localização</Text>
-          <Text>Rua francisco caminhoa, 162</Text>
           <Text>{Quadras.location}</Text>
+          <Text>{Quadras.street}</Text>
 
           <View style={{ borderRadius: 20, overflow: 'hidden', marginTop: 15 }}>
             <MapView style={{ height: height / 4.5, width: "100%", }} initialRegion={{
@@ -65,7 +78,7 @@ const TelaDetalhes = ({ route }) => {
       </View>
       <View style={{ flex: 1 }}>
         <TouchableOpacity style={{ width: '100%', height: 70, backgroundColor: COLORS.secondary, justifyContent: 'space-between', position: 'absolute', bottom: 0, paddingHorizontal: 30, flexDirection: 'row', alignItems: 'center' }}
-        onPress={() => navigation.navigate('TelaAgendamento')}>
+        onPress={handleGoBackToAgendamento}>
           <View style={{ padding: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.white, borderRadius: 10 }}>
             <Text style={{ color: COLORS.secondary, fontSize: 18, fontWeight: 'bold' }}>R$ {Quadras.price}/H</Text>
           </View>
