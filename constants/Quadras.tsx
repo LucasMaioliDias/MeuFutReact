@@ -9,8 +9,11 @@ const Quadras = [
       street:'Av. Prof. Conrado de Deo, 132 ',
       bath:true,
       barbecue:false,
+      parking:true,
       latitude:-23.631910, 
       longitude: -46.774659, 
+      uid:'EIGxpSNkEqZb1peY3296Ip9JMro1',
+      
     },
     {
       id: '2',
@@ -22,8 +25,10 @@ const Quadras = [
       street:'Rua Roque de mingo, 550',
       bath:false,
       barbecue:true,
+      parking:false,
       latitude:-23.631958,
       longitude: -46.763896,
+      uid:'EIGxpSNkEqZb1peY3296Ip9JMro1',
     },
     {
       id: '3',
@@ -34,10 +39,11 @@ const Quadras = [
       price:100.00,
       street:'Av. Miguel Ignácio Curi, 111',
       bath:true,
-      barbecue:true,  
+      barbecue:true,
+      parking:true,  
       latitude:-23.542896,
       longitude:  -46.474961 ,
-
+      uid:'EIGxpSNkEqZb1peY3296Ip9JMro1',
 
     },
     {
@@ -50,16 +56,17 @@ const Quadras = [
       street:'rua maraba,69',
       bath:false,
       barbecue:false,
+      parking:false,
       latitude:-23.645984,
       longitude: -46.787655,
+      uid:'',
     },
 
     
     
-    
-    
-   
-  ];
   
+  ];
+ 
+
   export default Quadras;
  

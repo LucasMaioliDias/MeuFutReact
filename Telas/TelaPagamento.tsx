@@ -20,23 +20,26 @@ import { useNavigation } from '@react-navigation/native';
 import Header from '../constants/Header';
 import moment from 'moment';
 
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, collection, addDoc, doc, getDoc } from 'firebase/firestore';
+
 const { width, height } = Dimensions.get('screen');
 
-const TelaPagamento = ({route}) => {
+const TelaPagamento = ({ route }) => {
     const navigation = useNavigation();
     const [isButtonClicked, setIsButtonClicked] = useState(false);
-    const { selectedTimes, selectedDate,nomeDaQuadra,localDaQuadra,ruaDaQuadra,preco,teste } = route.params;
+    const { selectedTimes, selectedDate, nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco, teste } = route.params;
 
     const calcularMultiplicacao = ({ preco, teste }) => {
         const resultado = teste * preco;
         return resultado;
     };
+
     
-    // Chamando a função e armazenando o resultado
     const resultadoDaMultiplicacao = calcularMultiplicacao({ preco, teste });
-    
-    
-    
+
+
+
 
     const formattedDate = moment(selectedDate).format('dddd, DD MMMM YYYY');
 
@@ -50,7 +53,64 @@ const TelaPagamento = ({route}) => {
         return partes[1] > max ? partes[1] : max;
     }, selectedTimes[0].split(' às ')[1]);
 
+    const [observacoes, setObservacoes] = useState('');
 
+    const handleAgendarClick = async () => {
+        try {
+            const auth = getAuth();
+            const user = auth.currentUser;
+            const uid = user ? user.uid : null;
+
+            
+            const firestore = getFirestore();
+
+           
+            const userDocRef = doc(firestore, 'users', uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+
+                
+                const name = typeof userData.name === 'string' ? userData.name : '';
+
+                
+                const { telefone } = userData;
+
+               
+                const agendamento = {
+                    user: {
+                        uid: uid,
+                        nome: name,
+                        telefone: telefone,
+                    },
+                    nomeDaQuadra: nomeDaQuadra,
+                    horario: `${menorHorario} às ${maiorHorario}`,
+                    data: formattedDate,
+                    local: {
+                        local: localDaQuadra,
+                        rua: ruaDaQuadra,
+                    },
+                    detalhes: observacoes,
+                    pagamento: 'Dinheiro',
+                    subtotal: resultadoDaMultiplicacao,
+                    total: resultadoDaMultiplicacao,
+                };
+
+                
+                const agendamentosCollection = collection(firestore, 'agendamentos');
+                const docRef = await addDoc(agendamentosCollection, agendamento);
+
+                console.log('Agendamento salvo com a chave:', docRef.id);
+
+                navigation.navigate('TelaConfirmacao');
+            } else {
+                console.error('Usuário não encontrado no Firestore');
+            }
+        } catch (error) {
+            console.error('Erro ao salvar agendamento:', error.message);
+        }
+    };
 
     const handleButtonClick = () => {
         setIsButtonClicked(!isButtonClicked);
@@ -84,7 +144,7 @@ const TelaPagamento = ({route}) => {
                             </View>
                             <View style={{ width: '50%', height: height / 18, alignItems: 'flex-end', paddingTop: 8 }}>
                                 <Text style={{ fontSize: 15 }}>
-                                {`${menorHorario} às`}{` ${maiorHorario}`}
+                                    {`${menorHorario} às`}{` ${maiorHorario}`}
                                 </Text>
                                 <Text style={{ color: COLORS.secondary, fontSize: 10 }}>
                                     (fuso horario local GTM)
@@ -98,7 +158,7 @@ const TelaPagamento = ({route}) => {
                         </View>
                         <View style={{ height: 2, width: '100%', backgroundColor: COLORS.LIGHT_GRAY }}></View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 3 }}>
-                            <View style={{ flexDirection: 'row', padding: 6, width: '50%',}}>
+                            <View style={{ flexDirection: 'row', padding: 6, width: '50%', }}>
                                 <Text style={{ marginTop: 6, color: COLORS.black }}>Local</Text>
                             </View>
                             <View style={{ width: '50%', alignItems: 'flex-end', paddingTop: 8 }}>
@@ -121,10 +181,10 @@ const TelaPagamento = ({route}) => {
                             <View style={{ height: 5, width: '100%', backgroundColor: COLORS.LIGHT_GRAY, marginTop: 4, marginStart: 8 }}></View>
                         </View>
                         <View style={{ width: '100%' }}>
-        
-                            <View style={{ height: 45, width: "100%", borderWidth: 2, borderColor: COLORS.secondary, borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 ,marginVertical:10}}>
+
+                            <View style={{ height: 45, width: "100%", borderWidth: 2, borderColor: COLORS.secondary, borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, marginVertical: 10 }}>
                                 <Icon name="book" size={19} color={COLORS.secondary} />
-                                <TextInput style={{ height: '100%', width: "100%", fontSize: 15, marginStart: 8 }} placeholder="Observacoes..."/>
+                                <TextInput style={{ height: '100%', width: "100%", fontSize: 15, marginStart: 8 }} placeholder="Observacoes..." />
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
@@ -159,9 +219,10 @@ const TelaPagamento = ({route}) => {
                             <Text>{`R$ ${resultadoDaMultiplicacao}`}</Text>
                         </View>
                         <View>
-                            <TouchableOpacity style={styles.agendar} onPress={() => navigation.navigate('TelaConfirmacao')}>
+                            <TouchableOpacity style={styles.agendar} onPress={handleAgendarClick}>
                                 <Text style={{ fontWeight: '900', color: COLORS.white, fontSize: 15 }}>Agendar Horário</Text>
                             </TouchableOpacity>
+
                         </View>
                     </View>
                 </ScrollView>

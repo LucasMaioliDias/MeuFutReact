@@ -9,6 +9,10 @@ import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc ,doc,setDoc} from 'firebase/firestore';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+
 
 type FormCadastro = {
   nome: string;
@@ -16,6 +20,25 @@ type FormCadastro = {
   senha: string;
   telefone: number;
   ddd: Number;
+};
+
+
+const registerUser = async (email, password, name, telefone, accountType, navigation) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+    const userData = {
+      email,
+      name,
+      telefone,
+      accountType,
+    };
+    const userRef = doc(collection(FIRESTORE_DB, 'users'), userCredential.user.uid);
+    await setDoc(userRef, userData);
+    navigation.navigate('TelaMenu');
+    console.log('Usuário registrado com sucesso!', userCredential.user);
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error.message);
+  }
 };
 
 
@@ -34,7 +57,9 @@ const TelaCadastro = () => {
   useEffect(() => console.log('Phone errors', errors?.telefone), [errors?.telefone]);
   useEffect(() => console.log('ddd errors', errors?.ddd), [errors?.ddd]);
 
-  const [hidepass, setHidePass] = useState(true)
+  
+  
+  const [hidepass, setHidePass] = useState(true);
 
 
 
@@ -207,10 +232,16 @@ const TelaCadastro = () => {
             </View>
           )}
         </View>
-        <TouchableOpacity style={Styles.btn} onPress={() => {
+        <TouchableOpacity
+        style={Styles.btn}
+        onPress={() => {
           Keyboard.dismiss();
-          handleSubmit(onsubmit)();
-        }}>
+          handleSubmit((data) => {
+            onsubmit(data);
+            registerUser(data.email, data.senha, data.nome, data.telefone, 'client', navigation);
+          })();
+        }}
+      >
           <Text style={Styles.btnText}>Cadastrar</Text>
         </TouchableOpacity>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   SafeAreaView, StatusBar, StyleSheet, View, Text, TextInput, FlatList, Dimensions, TouchableOpacity, Alert
 } from 'react-native';
@@ -9,7 +9,8 @@ import Quadras from '../constants/Quadras';
 import Carrosel from '../constants/CarroselQuadras';
 import { useNavigation } from '@react-navigation/native';
 import TelaAgendadas from './TelaAgendadas';
-
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, collection, addDoc,doc, getDoc } from 'firebase/firestore';
 
 
 const { width } = Dimensions.get('screen');
@@ -19,6 +20,37 @@ const TelaMenu = () => {
   const navigation = useNavigation();
   const [searchTerm, setSearchTerm] = useState('');
 
+
+  const [nomeUsuario, setNomeUsuario] = useState('');
+
+  useEffect(() => {
+    const obterNomeUsuario = async () => {
+      const auth = getAuth();
+          const user = auth.currentUser;
+          const uid = user ? user.uid : null;
+      
+          // Obtém a instância do Firestore
+          const firestore = getFirestore();
+      
+          // Recupera as informações do usuário no Firestore
+          const userDocRef = doc(firestore, 'users', uid);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+      
+            // Verifica se 'nome' é uma string válida antes de usá-la
+            const name = typeof userData.name === 'string' ? userData.name : '';
+            setNomeUsuario(name);
+          }
+    };
+
+    obterNomeUsuario();
+  }, []);
+
+  const obterDuasPrimeirasLetras = (name) => {
+    return name.slice(0, 2).toUpperCase();
+  };
 
   const alerta = () => {
     Alert.alert("Beta");
@@ -33,7 +65,7 @@ const TelaMenu = () => {
         <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row',height:'100%'}}>
           <EIcon name="shield" size={55} color={COLORS.white} />
           <View style={{ position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-            <Text style={{ fontSize: 30, color: COLORS.primary, fontWeight: 'bold' }}>LM</Text>
+            <Text style={{ fontSize: 30, color: COLORS.primary, fontWeight: 'bold' }}>{obterDuasPrimeirasLetras(nomeUsuario)}</Text>
           </View>
         </View>
         <View style={{justifyContent:'center',alignItems:'center',height:'100%'}}>

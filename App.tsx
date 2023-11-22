@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TelaSplash, TelaAbertura, TelaCadastro, TelaLogin, TelaMenu, TelaDetalhes, TelaEscolherTime, TelaAgendamento, TelaPagamento, TelaConfirmacao, TelaAgendadas } from './Telas';
+import { TelaSplash, TelaAbertura, TelaCadastro, TelaLogin, TelaMenu, TelaDetalhes, TelaEscolherTime, TelaAgendamento, TelaPagamento, TelaConfirmacao, TelaAgendadas,TelaMenuAdministrador } from './Telas';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +18,7 @@ declare global {
       TelaPagamento: {nomeDaQuadra:String;localDaQuadra:String;ruaDaQuadra:String;preco:String;teste:number;selectedTimes:String[];selectedDate: string;formattedDate?: string;};
       TelaConfirmacao: undefined;
       TelaAgendadas: undefined;
+      TelaMenuAdministrador:undefined;
     }
   }
 }
@@ -87,6 +88,11 @@ export default function App() {
         <Stack.Screen
           name="TelaAgendadas"
           component={TelaAgendadas}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TelaMenuAdministrador"
+          component={TelaMenuAdministrador}
           options={{ headerShown: false }}
         />
 

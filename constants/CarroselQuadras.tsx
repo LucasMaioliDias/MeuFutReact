@@ -37,6 +37,7 @@ const Carrosel = ({ Quadras }) => {
   </View>
   <Text style={{ fontSize: 13, fontWeight: '200' }}>{Quadras.location}</Text>
   <View style={{ flexDirection: 'row' }}>
+    {/* 
   {Quadras.bath && (
     <View style={styles.icon}>
       <Icon name="shower" size={14} color={COLORS.primary} />
@@ -46,7 +47,7 @@ const Carrosel = ({ Quadras }) => {
     <View style={styles.icon}>
       <Icon name="fire" size={14} color={COLORS.primary} />
     </View>
-  )}
+  )}*/}
 </View>
 
 </View>

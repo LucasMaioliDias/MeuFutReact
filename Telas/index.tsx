@@ -10,6 +10,7 @@ import TelaAgendamento from './TelaAgendamento';
 import TelaPagamento from './TelaPagamento';
 import TelaConfirmacao from './TelaConfirmacao';
 import TelaAgendadas from './TelaAgendadas';
+import TelaMenuAdministrador from './TelaMenuAdministrador';
 
 
 
@@ -25,5 +26,6 @@ export   {
     TelaPagamento,
     TelaConfirmacao,
     TelaAgendadas,
+    TelaMenuAdministrador,
 }
 

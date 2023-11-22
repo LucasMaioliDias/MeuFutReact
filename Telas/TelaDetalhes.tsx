@@ -28,7 +28,7 @@ const TelaDetalhes = ({ route }) => {
   
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 ,backgroundColor:COLORS.white}}>
       <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
@@ -42,7 +42,7 @@ const TelaDetalhes = ({ route }) => {
         <Text style={{ fontSize: 18, marginBottom: 5, fontWeight: '600', color: COLORS.primary }}>Descrição</Text>
         <Text>{Quadras.details}</Text>
         <View style={{ marginTop: 10 }}>
-          <Text style={{ fontSize: 18, marginBottom: 5, fontWeight: '600', color: COLORS.primary }}>Esqueci o nome</Text>
+          <Text style={{ fontSize: 18, marginBottom: 5, fontWeight: '600', color: COLORS.primary }}>Comodidades</Text>
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             {Quadras.bath && (<View style={styles.icon}>
               <Icon name="shower" size={20} color={COLORS.primary} />
@@ -50,14 +50,20 @@ const TelaDetalhes = ({ route }) => {
             {Quadras.barbecue && (<View style={styles.icon}>
               <Icon name="fire" size={20} color={COLORS.primary} />
             </View>)}
+            {Quadras.parking && (<View style={styles.icon}>
+              <Icon name="car" size={20} color={COLORS.primary} />
+            </View>)}
+            {Quadras.house && (<View style={styles.icon}>
+              <Icon name="car" size={20} color={COLORS.primary} />
+            </View>)}
           </View>
         </View>
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 10 ,backgroundColor:COLORS.white}}>
           <Text style={{ fontSize: 18, marginBottom: 5, fontWeight: '600', color: COLORS.primary }}>Localização</Text>
           <Text>{Quadras.location}</Text>
           <Text>{Quadras.street}</Text>
 
-          <View style={{ borderRadius: 20, overflow: 'hidden', marginTop: 15 }}>
+          <View style={{ borderRadius: 20, overflow: 'hidden', marginTop: 15, }}>
             <MapView style={{ height: height / 4.5, width: "100%", }} initialRegion={{
               latitude,
               longitude,

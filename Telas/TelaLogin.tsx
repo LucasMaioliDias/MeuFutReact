@@ -9,11 +9,46 @@ import { useForm, Controller } from "react-hook-form";
 import { useEffect } from 'react';
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { collection, getDoc, doc } from 'firebase/firestore';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 
 
 type FormData = {
   email: string;
   senha: string;
+};
+
+const loginUser = async (email: string, password: string, navigation: any) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+
+    const usersCollection = collection(FIRESTORE_DB, 'users');
+    const userDocRef = doc(usersCollection, userCredential.user.uid);
+
+    console.log('UID:', userCredential.user.uid);
+
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      // Verifique o tipo de conta (administrador ou cliente)
+      const accountType = userData.accountType;
+
+      if (accountType === 'client') {
+        navigation.navigate('TelaMenu');
+      } else if (accountType === 'administrator') {
+        navigation.navigate('TelaMenuAdministrador');
+      } else {
+        console.warn('Tipo de conta desconhecido:', accountType);
+      }
+    } else {
+      console.error('Documento do usuário não encontrado no Firestore');
+    }
+  } catch (error) {
+    console.error('Erro ao fazer login:', error.message);
+  }
 };
 
 
@@ -125,8 +160,10 @@ const TelaLogin = () => {
         </View>
         <TouchableOpacity style={Styles.btn} onPress={() => {
           Keyboard.dismiss();
-          handleSubmit(onsubmit)();
-          navigation.navigate("TelaMenu")
+          handleSubmit((data) => {
+            onsubmit(data);
+            loginUser(data.email, data.senha, navigation);
+          })();
         }}>
           <Text style={Styles.btnText}>Entrar</Text>
         </TouchableOpacity>
