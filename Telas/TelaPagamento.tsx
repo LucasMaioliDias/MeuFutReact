@@ -35,7 +35,7 @@ const TelaPagamento = ({ route }) => {
         return resultado;
     };
 
-    
+
     const resultadoDaMultiplicacao = calcularMultiplicacao({ preco, teste });
 
 
@@ -61,23 +61,23 @@ const TelaPagamento = ({ route }) => {
             const user = auth.currentUser;
             const uid = user ? user.uid : null;
 
-            
+
             const firestore = getFirestore();
 
-           
+
             const userDocRef = doc(firestore, 'users', uid);
             const userDoc = await getDoc(userDocRef);
 
             if (userDoc.exists()) {
                 const userData = userDoc.data();
 
-                
+
                 const name = typeof userData.name === 'string' ? userData.name : '';
 
-                
+
                 const { telefone } = userData;
 
-               
+
                 const agendamento = {
                     user: {
                         uid: uid,
@@ -91,13 +91,13 @@ const TelaPagamento = ({ route }) => {
                         local: localDaQuadra,
                         rua: ruaDaQuadra,
                     },
-                    detalhes: observacoes,
+                    detalhes: observacoes.trim(),
                     pagamento: 'Dinheiro',
                     subtotal: resultadoDaMultiplicacao,
                     total: resultadoDaMultiplicacao,
                 };
 
-                
+
                 const agendamentosCollection = collection(firestore, 'agendamentos');
                 const docRef = await addDoc(agendamentosCollection, agendamento);
 
@@ -184,7 +184,7 @@ const TelaPagamento = ({ route }) => {
 
                             <View style={{ height: 45, width: "100%", borderWidth: 2, borderColor: COLORS.secondary, borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, marginVertical: 10 }}>
                                 <Icon name="book" size={19} color={COLORS.secondary} />
-                                <TextInput style={{ height: '100%', width: "100%", fontSize: 15, marginStart: 8 }} placeholder="Observacoes..." />
+                                <TextInput style={{ height: '100%', width: "100%", fontSize: 15, marginStart: 8 }} placeholder="Observacoes..." value={observacoes} onChangeText={(text) => setObservacoes(text)} />
                             </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Header from '../constants/Header';
 import COLORS from '../constants/colors';
@@ -7,6 +7,9 @@ import Icon from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
+import { getFirestore, collection, getDocs, query, where,doc,getDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+
 
 const { width, height } = Dimensions.get('screen');
 
@@ -17,6 +20,51 @@ const TelaAgendadas = () => {
     const handleSquarePress = (index) => {
         setSelectedSquare(selectedSquare === index ? null : index);
     };
+
+    const [agendamentos, setAgendamentos] = useState([]);
+
+    useEffect(() => {
+        const obterAgendamentos = async () => {
+          try {
+            const auth = getAuth();
+            const user = auth.currentUser;
+            const uid = user ? user.uid : null;
+    
+            if (!uid) {
+              // Se o UID não estiver disponível, não há necessidade de prosseguir com a consulta
+              return;
+            }
+    
+            const firestore = getFirestore();
+    
+            // Obter dados do usuário
+            const userDocRef = doc(firestore, 'users', uid);
+            const userDoc = await getDoc(userDocRef);
+    
+            if (!userDoc.exists()) {
+              // Se o documento do usuário não existir, sair
+              return;
+            }
+    
+            // Consultar os documentos na coleção 'agendamentos' filtrando pelo UID do usuário logado
+            const agendamentosCollection = collection(firestore, 'agendamentos');
+            const agendamentosQuery = query(agendamentosCollection, where('userUid', '==', uid));
+            const querySnapshot = await getDocs(agendamentosQuery);
+    
+            const agendamentosArray = [];
+            querySnapshot.forEach((doc) => {
+              const data = doc.data();
+              agendamentosArray.push(data);
+            });
+    
+            setAgendamentos(agendamentosArray);
+          } catch (error) {
+            console.error('Erro ao obter agendamentos:', error);
+          }
+        };
+    
+        obterAgendamentos();
+      }, []);
     return (
         <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
             <View>
@@ -71,6 +119,7 @@ const TelaAgendadas = () => {
             <View style={{ height: 1, backgroundColor: COLORS.LIGHT_GRAY }} ></View>
             <View style={{ flex: 1, backgroundColor: COLORS.default, padding: 10 }}>
                 {hideAgenda ? (
+                    
                     <View>
                         <View style={styles.view}>
                             <Image source={require('../assets/QuadraFortaleza.png')}
