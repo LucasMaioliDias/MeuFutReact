@@ -19,10 +19,10 @@ import Icon from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../constants/Header';
 import moment from 'moment';
-
+import 'moment/locale/pt-br'; 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, addDoc, doc, getDoc } from 'firebase/firestore';
-
+moment.locale('pt-br'); 
 const { width, height } = Dimensions.get('screen');
 
 const TelaPagamento = ({ route }) => {
@@ -38,11 +38,8 @@ const TelaPagamento = ({ route }) => {
 
     const resultadoDaMultiplicacao = calcularMultiplicacao({ preco, teste });
 
-
-
-
-    const formattedDate = moment(selectedDate).format('dddd, DD MMMM YYYY');
-
+    const formattedDate = moment(selectedDate).locale('pt-br').format('dddd, DD MMMM YYYY');
+    
     const menorHorario = selectedTimes.reduce((min, intervalo) => {
         const partes = intervalo.split(' às ');
         return partes[0] < min ? partes[0] : min;
@@ -54,6 +51,8 @@ const TelaPagamento = ({ route }) => {
     }, selectedTimes[0].split(' às ')[1]);
 
     const [observacoes, setObservacoes] = useState('');
+
+    console.log(formattedDate);
 
     const handleAgendarClick = async () => {
         try {

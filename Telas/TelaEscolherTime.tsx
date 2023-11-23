@@ -203,7 +203,7 @@ const TelaEscolherTime = () => {
               value={inputText}
               placeholder="Ex.Lucas"
             />
-            <Text style={{ marginStart: 5, marginBottom: 4 }}>Habilidade</Text>
+            
             <Text style={{ marginStart: 5, marginBottom: 4 }}>Posicao</Text>
 
             <TouchableOpacity style={[styles.btn, getButtonStyle('G')]} onPress={() => setSelectedPosition('G')}>

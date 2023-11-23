@@ -1,19 +1,21 @@
 
 import { View, StyleSheet, SafeAreaView, TouchableOpacity, FlatList, Text } from 'react-native';
 import moment from 'moment';
+import 'moment/locale/pt-br'; 
 import CalendarStrip from 'react-native-calendar-strip';
 import Icon from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StatusBar } from 'expo-status-bar';
 import COLORS from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import Header from '../constants/Header';
 import Quadras from '../constants/Quadras';
 
 
 
 const TelaAgendamento = ({route}) => {
+    
     const today = moment();
     const datesBlacklist = [];
     for (let i = 1; i < 31; i++) {
@@ -80,7 +82,7 @@ const TelaAgendamento = ({route}) => {
 
     const handleDateSelected = (date) => {
         // Formatando a data no padrão desejado
-        const formattedDate = moment(date).format('dddd, DD MMMM YYYY');
+        const formattedDate = moment(selectedDate).locale('pt-br').format('dddd, DD [de] MMMM [de] YYYY');
         console.log(formattedDate); 
 
         setSelectedDate(date);
@@ -96,15 +98,34 @@ const TelaAgendamento = ({route}) => {
             .map(item => item.text);
     
         // Obter a data formatada no padrão desejado
-        const formattedDate = moment(selectedDate).format('dddd, DD MMMM YYYY');
-        const { nomeDaQuadra,localDaQuadra,ruaDaQuadra,preco} = route.params;
-        const teste = selectedCount;
-        // Passar as informações para a tela de pagamento
-        navigation.navigate("TelaPagamento", {ruaDaQuadra,localDaQuadra,nomeDaQuadra,selectedTimes, selectedDate: formattedDate,preco,teste});
-    };
+        const formattedDate = moment(selectedDate).locale('pt-br').format('dddd, DD MMMM YYYY');
     
- 
-
+        const { nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco } = route.params;
+        const teste = selectedCount;
+    
+        console.log(formattedDate);
+    
+        // Certifique-se de que a data seja passada no formato ISOString para a próxima tela
+        navigation.navigate("TelaPagamento", {
+            ruaDaQuadra,
+            localDaQuadra,
+            nomeDaQuadra,
+            selectedTimes,
+            selectedDate: selectedDate.toISOString(), // Convertendo para ISOString
+            preco,
+            teste,
+        });
+    };
+    {/* 
+    useEffect(() => {
+        const fetchDatesAgendadas = async () => {
+            const datesFromDB = await getDatesAgendadas();
+            setDatesAgendadas(datesFromDB);
+        };
+    
+        fetchDatesAgendadas();
+    }, []);
+*/}
     
 
 

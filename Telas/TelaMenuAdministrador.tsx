@@ -102,7 +102,7 @@ const TelaMenuAdministrador = () => {
       <View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
         <FlatList
           data={agendamentos.filter((item) => {
-            // Retorna true se a quadra do agendamento pertence ao usuário logado
+            
             return quadrasDoUsuario.some((quadra) => quadra.name === item.nomeDaQuadra);
           })}
           keyExtractor={(item) => item.id}
@@ -121,7 +121,7 @@ const TelaMenuAdministrador = () => {
               <View
                 style={{
                   width: '100%',
-                  height: 110,
+                  height: 120,
                   borderRadius: 10,
                   borderWidth: 1,
                   borderColor: COLORS.LIGHT_GRAY,
