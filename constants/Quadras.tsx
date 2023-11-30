@@ -12,7 +12,7 @@ const Quadras = [
       parking:true,
       latitude:-23.631910, 
       longitude: -46.774659, 
-      uid:'EIGxpSNkEqZb1peY3296Ip9JMro1',
+      uid:'8zEEZjBMeSN3XaQZtZe7DbF3ist1',
       
     },
     {
@@ -21,14 +21,14 @@ const Quadras = [
       location: 'Taboão da serra, São Paulo ',
       image: require('../assets/zedofeijao.jpeg'),
       details: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Consequat nisl vel pretium lectus quam id leo. Velit euismod in pellentesque massa placerat duis ultricies lacus sed. Justo laoreet sit amet cursus sit.`,
-      price:20.00,
+      price:40.00,
       street:'Rua Roque de mingo, 550',
       bath:false,
       barbecue:true,
       parking:false,
       latitude:-23.631958,
       longitude: -46.763896,
-      uid:'EIGxpSNkEqZb1peY3296Ip9JMro1',
+      uid:'8zEEZjBMeSN3XaQZtZe7DbF3ist1',
     },
     {
       id: '3',
@@ -43,7 +43,7 @@ const Quadras = [
       parking:true,  
       latitude:-23.542896,
       longitude:  -46.474961 ,
-      uid:'RlhB4a9K1sX7ZkIij1DN0Z3pCrY2',
+      uid:'LPOd3YiCLAaOeqzQUydPihuPkhP2',
 
     },
     {
@@ -59,7 +59,7 @@ const Quadras = [
       parking:false,
       latitude:-23.645984,
       longitude: -46.787655,
-      uid:'RlhB4a9K1sX7ZkIij1DN0Z3pCrY2',
+      uid:'LPOd3YiCLAaOeqzQUydPihuPkhP2',
     },
 
     

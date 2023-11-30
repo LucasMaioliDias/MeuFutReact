@@ -26,6 +26,8 @@ const TelaEscolherTime = () => {
 
 
 
+
+
   useEffect(() => {
     // Carregar dados do AsyncStorage ao montar o componente
     loadData();
@@ -61,7 +63,7 @@ const TelaEscolherTime = () => {
     try {
       await AsyncStorage.setItem('playerData', JSON.stringify(data));
     } catch (error) {
-      console.error('Error saving data:', error);
+      //console.error('Error saving data:', error);
     }
   };
 
@@ -72,7 +74,7 @@ const TelaEscolherTime = () => {
         setData(JSON.parse(savedData));
       }
     } catch (error) {
-      console.error('Error loading data:', error);
+      //console.error('Error loading data:', error);
     }
   };
 

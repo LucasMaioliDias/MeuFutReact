@@ -1,5 +1,5 @@
 
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard,ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -23,23 +23,7 @@ type FormCadastro = {
 };
 
 
-const registerUser = async (email, password, name, telefone, accountType, navigation) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
-    const userData = {
-      email,
-      name,
-      telefone,
-      accountType,
-    };
-    const userRef = doc(collection(FIRESTORE_DB, 'users'), userCredential.user.uid);
-    await setDoc(userRef, userData);
-    navigation.navigate('TelaMenu');
-    console.log('Usuário registrado com sucesso!', userCredential.user);
-  } catch (error) {
-    console.error('Erro ao registrar usuário:', error.message);
-  }
-};
+
 
 
 
@@ -57,11 +41,31 @@ const TelaCadastro = () => {
   useEffect(() => console.log('Phone errors', errors?.telefone), [errors?.telefone]);
   useEffect(() => console.log('ddd errors', errors?.ddd), [errors?.ddd]);
 
-  
-  
+  const [error, setError] = useState(null); 
+  const [loading, setLoading] = useState(false);
   const [hidepass, setHidePass] = useState(true);
 
-
+  const registerUser = async (email, password, name, telefone, accountType, navigation) => {
+    try {
+      setLoading(true);
+      const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      const userData = {
+        email,
+        name,
+        telefone,
+        accountType,
+      };
+      const userRef = doc(collection(FIRESTORE_DB, 'users'), userCredential.user.uid);
+      await setDoc(userRef, userData);
+      navigation.navigate('TelaMenu');
+      console.log('Usuário registrado com sucesso!', userCredential.user);
+    } catch (error) {
+      //console.error('Erro ao registrar usuário:', error.message);
+      setError('Erro ao registrar usuário', );
+    }finally {
+      setLoading(false); // Desativa o indicador de carregamento, independentemente do resultado do login
+    }
+  };
 
   return (
     <SafeAreaView style={Styles.container}>
@@ -231,6 +235,11 @@ const TelaCadastro = () => {
               <Text style={Styles.erro}>{errors.senha?.message}</Text>
             </View>
           )}
+          {error && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="alert-circle-outline" size={15} color='red' />
+              <Text style={Styles.erro}>{error}</Text>
+               
+            </View>}
         </View>
         <TouchableOpacity
         style={Styles.btn}
@@ -244,6 +253,7 @@ const TelaCadastro = () => {
       >
           <Text style={Styles.btnText}>Cadastrar</Text>
         </TouchableOpacity>
+        {loading && <ActivityIndicator size="large" color={COLORS.primary} style={{marginTop:10}}/>}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
         </View>
         <View style={{ justifyContent: 'center', flexDirection: 'row'}}>

@@ -103,12 +103,6 @@ const TelaMenu = () => {
           </View>
           <Text style={{ fontSize: 14, color: COLORS.primary, fontWeight: 'bold', marginTop: 5 }}>Escolher Time</Text>
         </TouchableOpacity>
-        <View style={styles.containerQuadras}>
-          <View style={styles.icon}>
-            <Icon name="star-sharp" size={25} color={COLORS.primary} />
-          </View>
-          <Text style={{ fontSize: 14, color: COLORS.primary, fontWeight: 'bold', marginTop: 5 }}>favoritos</Text>
-        </View>
         <TouchableOpacity style={styles.containerQuadras} onPress={() => navigation.navigate('TelaAgendadas')}>
           <View style={styles.icon}>
             <Icon name="calendar" size={25} color={COLORS.primary} />
@@ -117,9 +111,15 @@ const TelaMenu = () => {
         </TouchableOpacity>
         <View style={styles.containerQuadras}>
           <View style={styles.icon}>
-            <Icon name="navigate" size={25} color={COLORS.primary} />
+            <Icon name="star-sharp" size={25} color={COLORS.primary} />
           </View>
-          <Text style={{ fontSize: 14, color: COLORS.primary, fontWeight: 'bold', marginTop: 5 }}>Localizaçao</Text>
+          <Text style={{ fontSize: 14, color: COLORS.primary, fontWeight: 'bold', marginTop: 5 }}>favoritos</Text>
+        </View>
+        <View style={styles.containerQuadras}>
+          <View style={styles.icon}>
+            {/*<Icon name="navigate" size={25} color={COLORS.primary} />*/}
+          </View>
+          {/*<Text style={{ fontSize: 14, color: COLORS.primary, fontWeight: 'bold', marginTop: 5 }}>Localizaçao</Text>*/}
         </View>
 
       </View>
