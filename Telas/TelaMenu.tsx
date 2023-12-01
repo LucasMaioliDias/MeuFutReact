@@ -76,7 +76,9 @@ const TelaMenu = () => {
           </View>
         </View>
         </View>
-        <Icon name="notifications-outline" size={28} color={COLORS.white} />
+        <TouchableOpacity onPress={()=> navigation.navigate('TelaAbertura')}>
+        <Icon name="exit-outline" size={30} color={COLORS.white} />
+        </TouchableOpacity>
       </View>
       <View style={{ height: 35, backgroundColor: COLORS.secondary, alignItems: 'center', paddingHorizontal: 18, flexDirection: 'row' }}>
         <Icon name="compass-outline" size={19} color={COLORS.white} />

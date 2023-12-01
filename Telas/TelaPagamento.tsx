@@ -11,6 +11,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import COLORS from '../constants/colors';
@@ -19,16 +20,18 @@ import Icon from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../constants/Header';
 import moment from 'moment';
-import 'moment/locale/pt-br'; 
+import 'moment/locale/pt-br';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, addDoc, doc, getDoc } from 'firebase/firestore';
-moment.locale('pt-br'); 
+moment.locale('pt-br');
 const { width, height } = Dimensions.get('screen');
 
 const TelaPagamento = ({ route }) => {
     const navigation = useNavigation();
     const [isButtonClicked, setIsButtonClicked] = useState(false);
-    const { selectedTimes, selectedDate, nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco, teste ,selectedIds} = route.params;
+    const { selectedTimes, selectedDate, nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco, teste, selectedIds } = route.params;
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const calcularMultiplicacao = ({ preco, teste }) => {
         const resultado = teste * preco;
@@ -37,9 +40,8 @@ const TelaPagamento = ({ route }) => {
 
 
     const resultadoDaMultiplicacao = calcularMultiplicacao({ preco, teste });
-
     const formattedDate = moment(selectedDate).locale('pt-br').format('dddd, DD MMMM YYYY');
-    
+
     const menorHorario = selectedTimes.reduce((min, intervalo) => {
         const partes = intervalo.split(' às ');
         return partes[0] < min ? partes[0] : min;
@@ -52,63 +54,59 @@ const TelaPagamento = ({ route }) => {
 
     const [observacoes, setObservacoes] = useState('');
 
-    console.log(selectedIds);
+    console.log(isButtonClicked);
 
     const handleAgendarClick = async () => {
         try {
+            setLoading(true);
             const auth = getAuth();
             const user = auth.currentUser;
             const uid = user ? user.uid : null;
-
-
             const firestore = getFirestore();
-
 
             const userDocRef = doc(firestore, 'users', uid);
             const userDoc = await getDoc(userDocRef);
+            if (isButtonClicked === true) {
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const name = typeof userData.name === 'string' ? userData.name : '';
+                    const { telefone } = userData;
+                    const agendamento = {
+                        user: {
+                            uid: uid,
+                            nome: name,
+                            telefone: telefone,
+                        },
+                        nomeDaQuadra: nomeDaQuadra,
+                        horario: `${menorHorario} às ${maiorHorario}`,
+                        data: formattedDate,
+                        idHorario: selectedIds,
+                        status: 'agendado',
+                        local: {
+                            local: localDaQuadra,
+                            rua: ruaDaQuadra,
+                        },
+                        detalhes: observacoes.trim(),
+                        pagamento: 'Dinheiro',
+                        subtotal: resultadoDaMultiplicacao,
+                        total: resultadoDaMultiplicacao,
+                    };
 
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-
-
-                const name = typeof userData.name === 'string' ? userData.name : '';
-
-
-                const { telefone } = userData;
-
-
-                const agendamento = {
-                    user: {
-                        uid: uid,
-                        nome: name,
-                        telefone: telefone,
-                    },
-                    nomeDaQuadra: nomeDaQuadra,
-                    horario: `${menorHorario} às ${maiorHorario}`,
-                    data: formattedDate,
-                    idHorario: selectedIds,
-                    local: {
-                        local: localDaQuadra,
-                        rua: ruaDaQuadra,
-                    },
-                    detalhes: observacoes.trim(),
-                    pagamento: 'Dinheiro',
-                    subtotal: resultadoDaMultiplicacao,
-                    total: resultadoDaMultiplicacao,
-                };
-
-
-                const agendamentosCollection = collection(firestore, 'agendamentos');
-                const docRef = await addDoc(agendamentosCollection, agendamento);
-
-                console.log('Agendamento salvo com a chave:', docRef.id);
-
-                navigation.navigate('TelaConfirmacao');
+                    const agendamentosCollection = collection(firestore, 'agendamentos');
+                    const docRef = await addDoc(agendamentosCollection, agendamento);
+                    console.log('Agendamento salvo com a chave:', docRef.id);
+                    navigation.navigate('TelaConfirmacao');
+                    
+                } else {
+                    console.error('Usuário não encontrado no Firestore');
+                }
             } else {
-                console.error('Usuário não encontrado no Firestore');
+                setError('selecione uma forrma de pagamento');
             }
         } catch (error) {
             console.error('Erro ao salvar agendamento:', error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -205,6 +203,11 @@ const TelaPagamento = ({ route }) => {
                                     <Text style={{ fontStyle: 'italic', fontSize: 10, color: isButtonClicked ? 'white' : 'black' }}>Pague no local</Text>
                                 </View>
                             </TouchableOpacity>
+                            {error && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Ionicons name="alert-circle-outline" size={15} color='red' />
+                                <Text style={styles.erro}>{error}</Text>
+
+                            </View>}
                         </View>
                     </View>
                     <View style={styles.bottomContainer}>
@@ -220,9 +223,14 @@ const TelaPagamento = ({ route }) => {
                         </View>
                         <View>
                             <TouchableOpacity style={styles.agendar} onPress={handleAgendarClick}>
-                                <Text style={{ fontWeight: '900', color: COLORS.white, fontSize: 15 }}>Agendar Horário</Text>
+                                {loading ? (
+                                    <ActivityIndicator size="large" color={COLORS.white} />
+                                ) : (
+                                    <Text style={{ fontWeight: '900', color: COLORS.white, fontSize: 15 }}>
+                                        Agendar Horário
+                                    </Text>
+                                )}
                             </TouchableOpacity>
-
                         </View>
                     </View>
                 </ScrollView>
@@ -259,6 +267,11 @@ const styles = StyleSheet.create({
         bottom: 0,
         position: 'absolute',
         width: '100%',
+    },
+    erro: {
+        color: 'red',
+        margin: 5,
+        flexDirection: 'row'
     },
 });
 

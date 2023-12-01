@@ -1,5 +1,5 @@
 
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard,ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -10,7 +10,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc ,doc,setDoc} from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 
 
@@ -41,7 +41,7 @@ const TelaCadastro = () => {
   useEffect(() => console.log('Phone errors', errors?.telefone), [errors?.telefone]);
   useEffect(() => console.log('ddd errors', errors?.ddd), [errors?.ddd]);
 
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [hidepass, setHidePass] = useState(true);
 
@@ -61,8 +61,8 @@ const TelaCadastro = () => {
       console.log('Usuário registrado com sucesso!', userCredential.user);
     } catch (error) {
       //console.error('Erro ao registrar usuário:', error.message);
-      setError('Erro ao registrar usuário', );
-    }finally {
+      setError('Erro ao registrar usuário',);
+    } finally {
       setLoading(false); // Desativa o indicador de carregamento, independentemente do resultado do login
     }
   };
@@ -236,27 +236,31 @@ const TelaCadastro = () => {
             </View>
           )}
           {error && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name="alert-circle-outline" size={15} color='red' />
-              <Text style={Styles.erro}>{error}</Text>
-               
-            </View>}
+            <Ionicons name="alert-circle-outline" size={15} color='red' />
+            <Text style={Styles.erro}>{error}</Text>
+
+          </View>}
         </View>
         <TouchableOpacity
-        style={Styles.btn}
-        onPress={() => {
-          Keyboard.dismiss();
-          handleSubmit((data) => {
-            onsubmit(data);
-            registerUser(data.email, data.senha, data.nome, data.telefone, 'client', navigation);
-          })();
-        }}
-      >
-          <Text style={Styles.btnText}>Cadastrar</Text>
+          style={Styles.btn}
+          onPress={() => {
+            Keyboard.dismiss();
+            handleSubmit((data) => {
+              onsubmit(data);
+              registerUser(data.email, data.senha, data.nome, data.telefone, 'client', navigation);
+            })();
+          }}
+        >
+          {loading ? (
+            <ActivityIndicator size="large" color={COLORS.white} />
+          ) : (
+            <Text style={Styles.btnText}>Cadastrar</Text>
+          )}
         </TouchableOpacity>
-        {loading && <ActivityIndicator size="large" color={COLORS.primary} style={{marginTop:10}}/>}
+
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
         </View>
-        <View style={{ justifyContent: 'center', flexDirection: 'row'}}>
+        <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
           <Text>Já tem uma conta!!</Text>
           <Text style={{ marginHorizontal: 4, fontWeight: 'bold', color: COLORS.primary }} onPress={() => navigation.navigate("TelaLogin")}>Entre</Text>
         </View>

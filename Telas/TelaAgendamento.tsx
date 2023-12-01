@@ -1,5 +1,5 @@
 
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, FlatList, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView, TouchableOpacity, FlatList, Text, ActivityIndicator } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import CalendarStrip from 'react-native-calendar-strip';
@@ -26,6 +26,7 @@ const TelaAgendamento = ({ route }) => {
 
     const navigation = useNavigation();
     const [selectedCount, setSelectedCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [selectedDate, setSelectedDate] = useState(moment());
     const [data, setData] = useState([
@@ -80,7 +81,7 @@ const TelaAgendamento = ({ route }) => {
             return newData;
         });
     };
-    
+
 
     const handleDateSelected = (date) => {
         // Formatando a data no padrão desejado
@@ -99,21 +100,21 @@ const TelaAgendamento = ({ route }) => {
             .filter(item => item.selected)
             .map(item => item.text);
 
-        
+
         const formattedDate = moment(selectedDate).locale('pt-br').format('dddd, DD MMMM YYYY');
 
         const { nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco, } = route.params;
         const teste = selectedCount;
 
         console.log(formattedDate);
-         
-        
+
+
         navigation.navigate("TelaPagamento", {
             ruaDaQuadra,
             localDaQuadra,
             nomeDaQuadra,
             selectedTimes,
-            selectedDate: selectedDate.toISOString(), 
+            selectedDate: selectedDate.toISOString(),
             preco,
             teste,
             selectedIds,
@@ -125,9 +126,9 @@ const TelaAgendamento = ({ route }) => {
     useEffect(() => {
         const obterAgendamentos = async () => {
             try {
-                
+
                 const firestore = getFirestore();
-                
+
                 const agendamentosCollection = collection(firestore, 'agendamentos');
                 const querySnapshot = await getDocs(agendamentosCollection);
 
@@ -147,13 +148,6 @@ const TelaAgendamento = ({ route }) => {
         obterAgendamentos();
     }, []);
 
-
-
-    useEffect(() => {
-        console.log("Quadras do Usuário:", quadrasDoUsuario);
-        console.log("Quadras do Usuário:", agendamentos.some((agendamento) => agendamento.idHorario));
-        console.log("Quadras do Usuário:", agendamentos.some((agendamento) => agendamento.data));
-    }, [quadrasDoUsuario]);
 
 
     const selectedDateISOString = moment(selectedDate).locale('pt-br').format('dddd, DD MMMM YYYY');
@@ -176,21 +170,45 @@ const TelaAgendamento = ({ route }) => {
 
 
             horariosNaoAgendados = data.filter(item => !horariosDoBancoFlat.includes(item.id));
+            
         } else {
             console.log('Nenhum agendamento para a data selecionada.');
 
-            
+
             horariosNaoAgendados = data;
         }
     } else {
         console.log(`Nenhum agendamento para a quadra ${nomeDaQuadra}.`);
+        
         horariosNaoAgendados = data;
+       
+
     }
 
     console.log('Variável final:', horariosNaoAgendados);
+    
 
-
-
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                console.log("Quadras do Usuário:", quadrasDoUsuario);
+                console.log("Quadras do Usuário:", agendamentos.some((agendamento) => agendamento.idHorario));
+                console.log("Quadras do Usuário:", agendamentos.some((agendamento) => agendamento.data));
+    
+                
+                await new Promise(resolve => setTimeout(resolve, 3000));
+    
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                
+                setIsLoading(false);
+            }
+        };
+    
+        fetchData(); 
+    }, [quadrasDoUsuario]);
+    
 
 
 
@@ -225,37 +243,48 @@ const TelaAgendamento = ({ route }) => {
                     selectedDate={selectedDate}
                 />
             </View>
-            <View style={{ backgroundColor: "#f3f3f3", flex: 1 }}>
-                <FlatList
-                    data={horariosNaoAgendados}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.datas} onPress={() => handleSelectItem(item.id)} disabled={!item.habilitado}>
-                            <View style={{ height: "100%", width: "10%", alignItems: 'center', justifyContent: 'center' }}>
-                                {item.selected &&
-                                    <Ionicons name="checkmark-done-sharp" size={20} color={COLORS.primary} />
-                                }
-                            </View>
-                            <View style={styles.informacoes}>
-                                <Text>{item.text}</Text>
-                                <Ionicons name="football" size={19} color={COLORS.secondary} />
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                    keyExtractor={(item) => item.id}
-                />
-            </View>
-            {selectedCount > 0 &&
-                <View style={styles.container}>
-                    <Text style={styles.headerText}>{`${selectedCount} Horários selecionados`}</Text>
-                    <TouchableOpacity style={styles.button} onPress={handleGoToPayment}>
-                        <Icon name="calendar-check-o" size={30} color={COLORS.secondary} />
-                    </TouchableOpacity>
+            {isLoading ? (
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
                 </View>
-            }
+            ) : (
+                <View style={{ backgroundColor: "#f3f3f3", flex: 1 }}>
+                    <FlatList
+                        data={horariosNaoAgendados}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity
+                                style={styles.datas}
+                                onPress={() => handleSelectItem(item.id)}
+                                disabled={!item.habilitado}
+                            >
+                                <View style={{ height: "100%", width: "10%", alignItems: 'center', justifyContent: 'center' }}>
+                                    {item.selected && (
+                                        <Ionicons name="checkmark-done-sharp" size={20} color={COLORS.primary} />
+                                    )}
+                                </View>
+                                <View style={styles.informacoes}>
+                                    <Text>{item.text}</Text>
+                                    <Ionicons name="football" size={19} color={COLORS.secondary} />
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        keyExtractor={(item) => item.id.toString()}
+                    />
+                    {selectedCount > 0 && (
+                        <View style={styles.container}>
+                            <Text style={styles.headerText}>{`${selectedCount} Horários selecionados`}</Text>
+                            <TouchableOpacity style={styles.button} onPress={handleGoToPayment}>
+                                <Icon name="calendar-check-o" size={30} color={COLORS.secondary} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+            )}
 
 
         </SafeAreaView>
     );
+
 };
 
 const styles = StyleSheet.create({

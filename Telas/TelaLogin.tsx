@@ -1,5 +1,5 @@
 
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard,ActivityIndicator} from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -31,7 +31,7 @@ const TelaLogin = () => {
 
   useEffect(() => console.log('Senha errors', errors?.senha), [errors?.senha]);
   useEffect(() => console.log('Email errors', errors?.email), [errors?.email]);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [hidepass, setHidePass] = useState(true)
   const [loading, setLoading] = useState(false);
 
@@ -39,20 +39,20 @@ const TelaLogin = () => {
     try {
       setLoading(true);
       const userCredential = await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-      
+
       const usersCollection = collection(FIRESTORE_DB, 'users');
       const userDocRef = doc(usersCollection, userCredential.user.uid);
-  
+
       console.log('UID:', userCredential.user.uid);
-  
+
       const userDoc = await getDoc(userDocRef);
-  
+
       if (userDoc.exists()) {
         const userData = userDoc.data();
-  
+
         // Verifique o tipo de conta (administrador ou cliente)
         const accountType = userData.accountType;
-  
+
         if (accountType === 'client') {
           navigation.navigate('TelaMenu');
         } else if (accountType === 'administrator') {
@@ -62,23 +62,23 @@ const TelaLogin = () => {
         }
       } else {
         console.error('Documento do usuário não encontrado no Firestore');
-        
+
       }
     } catch (error) {
       //console.error('Erro ao fazer login:', error.message);
       setError('Usuario ou senha invalido');
-    }finally {
+    } finally {
       setLoading(false); // Desativa o indicador de carregamento, independentemente do resultado do login
     }
 
-  
+
   };
 
   return (
     <SafeAreaView style={Styles.container}>
       <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
       <View style={{ marginVertical: 22 }}>
-        <View style={{ justifyContent: 'center',alignItems:'center' }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Image source={require('../assets/logo.png')} style={{ height: 100, width: 100 }} />
           {/*<Text style={Styles.txt}>Bem vindo</Text>*/}
         </View>
@@ -165,15 +165,15 @@ const TelaLogin = () => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="alert-circle-outline" size={15} color='red' />
               <Text style={Styles.erro}>{errors.senha?.message}</Text>
-               
+
             </View>
           )}
           {error && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name="alert-circle-outline" size={15} color='red' />
-              <Text style={Styles.erro}>{error}</Text>
-               
-            </View>}
-          
+            <Ionicons name="alert-circle-outline" size={15} color='red' />
+            <Text style={Styles.erro}>{error}</Text>
+
+          </View>}
+
         </View>
         <TouchableOpacity style={Styles.btn} onPress={() => {
           Keyboard.dismiss();
@@ -182,9 +182,13 @@ const TelaLogin = () => {
             loginUser(data.email, data.senha, navigation);
           })();
         }}>
-          <Text style={Styles.btnText}>Entrar</Text>
+          {loading ? (
+            <ActivityIndicator size="large" color={COLORS.white} />
+          ) : (
+            <Text style={Styles.btnText}>Entrar</Text>
+          )}
         </TouchableOpacity>
-        {loading && <ActivityIndicator size="large" color={COLORS.primary}/>}
+
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
           <View style={{ flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10 }}>
           </View>

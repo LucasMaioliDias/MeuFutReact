@@ -297,7 +297,7 @@ const TelaEscolherTime = () => {
               <View style={{ marginBottom: 8 }}>
                 <Ionicons name="close" size={30} color={COLORS.primary} onPress={toggleSecondModal} />
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
                 <TextInput
                   style={{ height: 40, width: 60, borderColor: COLORS.secondary, borderWidth: 2, paddingLeft: 10, borderRadius: 10 }}
                   placeholder="1-10"
@@ -308,6 +308,9 @@ const TelaEscolherTime = () => {
                     setNumber(isNaN(parsedNumber) ? 0 : parsedNumber);
                   }}
                 />
+                <View style={{justifyContent:'center',alignItems:'center'}}>
+                <Text>Escolha a quantidades de times</Text>
+                </View>
                 <TouchableOpacity style={{ height: 50, width: 65, backgroundColor: COLORS.secondary, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }} onPress={formTeams}>
                   <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>Formar</Text>
                 </TouchableOpacity>

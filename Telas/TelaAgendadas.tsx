@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Image ,FlatList,ImageBackground} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Image, FlatList, ImageBackground } from 'react-native';
 import Header from '../constants/Header';
 import COLORS from '../constants/colors';
 import { FontAwesome } from '@expo/vector-icons';
@@ -7,121 +7,221 @@ import Icon from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
-import { getFirestore, collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import Quadras from '../constants/Quadras';
+import Modal from 'react-native-modal';
 
 const { width, height } = Dimensions.get('screen');
 
+
 const TelaAgendadas = () => {
+    const [agendamentoData, setAgendamentoData] = useState([]);
+    const [uid, setUid] = useState(null);
     const navigation = useNavigation();
     const [hideAgenda, setHideAgenda] = useState(false);
-    const [selectedSquare, setSelectedSquare] = useState(null);
+    const [selectedSquare, setSelectedSquare] = useState(1);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedAgendamento, setSelectedAgendamento] = useState(null);
+
+    const handleShowModal = (agendamento) => {
+        setSelectedAgendamento(agendamento);
+        setIsModalVisible(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+    };
+
     const handleSquarePress = (index) => {
         setSelectedSquare(selectedSquare === index ? null : index);
     };
 
-    const [agendamentos, setAgendamentos] = useState([]);
-    const [quadrasDoUsuario, setQuadrasDoUsuario] = useState([]);
-
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const uid = user ? user.uid : null;
-
     useEffect(() => {
-        const obterAgendamentos = async () => {
+        const obterDadosAgendamentos = async () => {
+            const firestore = getFirestore();
+
             try {
-                // Obtém a instância do Firestore
-                const firestore = getFirestore();
-    
-                // Consulta os documentos na coleção 'agendamentos'
+                const auth = getAuth();
+                const user = auth.currentUser;
+                setUid(user ? user.uid : null);
+
                 const agendamentosCollection = collection(firestore, 'agendamentos');
-                const querySnapshot = await getDocs(agendamentosCollection);
-    
-                const agendamentosArray = [];
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    agendamentosArray.push(data);
-                });
-    
-                setAgendamentos(agendamentosArray);
+
+                // Adicione um filtro baseado no status selecionado
+                let statusFiltro = '';
+                if (selectedSquare === 1) {
+                    statusFiltro = 'agendado';
+                } else if (selectedSquare === 2) {
+                    statusFiltro = 'cancelado';
+                } else if (selectedSquare === 3) {
+                    statusFiltro = 'realizado';
+                }
+
+                // Use o filtro apenas se o statusFiltro não for uma string vazia
+                const querySnapshot = statusFiltro
+                    ? await getDocs(query(agendamentosCollection, where('status', '==', statusFiltro)))
+                    : await getDocs(agendamentosCollection);
+
+                const dadosAgendamentos = querySnapshot.docs
+                    .filter((doc) => doc.data().user.uid === uid)
+                    .map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+
+                setAgendamentoData(dadosAgendamentos);
             } catch (error) {
-                console.error('Erro ao obter agendamentos:', error);
+                console.error('Erro ao obter dados dos agendamentos:', error);
             }
         };
-    
-        obterAgendamentos();
-    }, []);
-    
-    useEffect(() => {
-        // Filtra as quadras associadas ao usuário logado
-        const quadrasFiltradas = agendamentos.filter((item) => item.user.uid === uid);
-        setQuadrasDoUsuario(quadrasFiltradas);
-    }, [uid, agendamentos]);
-   
 
-return (
-    <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
-        <View>
-            <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
-            <View style={styles.teste1}>
-                <TouchableOpacity style={styles.teste2} onPress={() => navigation.navigate('TelaMenu')} >
-                    <Ionicons name="arrow-back" size={30} color={COLORS.secondary} style={{ marginTop: 13 }} />
-                </TouchableOpacity>
-                <View style={{ height: '100%', width: '80%', justifyContent: 'center', }}>
-                    <Text style={{ marginTop: 13, fontSize: 20, fontWeight: 'bold', color: COLORS.primary }}>Quadras Agendadas</Text>
+        obterDadosAgendamentos();
+    }, [uid, selectedSquare]);
+
+
+    const handleObterIdAgendamento = async (agendamento) => {
+
+        console.log('Clicou no agendamento com ID:', agendamento.id);
+
+        handleCloseModal();
+
+        await alterarStatusNoBanco(agendamento.id);
+
+        handleSquarePress(2);
+    };
+
+    const alterarStatusNoBanco = async (agendamentoId) => {
+        const firestore = getFirestore();
+        const agendamentoRef = doc(firestore, 'agendamentos', agendamentoId);
+
+        try {
+
+            await updateDoc(agendamentoRef, { status: 'cancelado' });
+
+            console.log('Status do Agendamento atualizado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao atualizar o status do agendamento:', error);
+        }
+    };
+
+    const renderItem = ({ item }) => {
+        const quadraInfo = Quadras.find((quadra) => quadra.name === item.nomeDaQuadra);
+
+        return (
+            <View
+                style={{
+                    width: '100%',
+                    height: 120,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: COLORS.LIGHT_GRAY,
+                    overflow: 'hidden',
+                    marginBottom: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor:COLORS.white
+                }}
+            >
+                <View style={{ width: '30%', height: '100%' }}>
+                    {quadraInfo && (
+                        <ImageBackground style={{ height: '100%' }} source={quadraInfo.image} />
+                    )}
+                </View>
+                <View style={{ flex: 1, paddingVertical: 10, flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ justifyContent: 'center', marginBottom: 5, width: '80%', paddingEnd: 20, flexDirection: 'column', paddingLeft: 10 }}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, letterSpacing: 1.5 }}>{item.nomeDaQuadra}</Text>
+                        <Text style={{fontWeight:'300'}}>{item.data}</Text>
+                        <Text style={{fontWeight:'300'}}>{item.horario}</Text>
+                        <Text style={{fontWeight:'300'}}>{item.local.local}</Text>
+                        <Text style={{fontWeight:'300'}}>{item.local.rua}</Text>
+                        <Text style={{fontWeight:'300'}}>{item.detalhes}</Text>
+                    </View>
+                    {selectedSquare === 1 ? (
+    <TouchableOpacity style={{ alignItems: 'center', height: '100%', width: '20%' }} onPress={() => handleShowModal(item)}>
+        <Ionicons name="ios-close-circle" size={20} color='red' />
+    </TouchableOpacity>
+) : null}
+
                 </View>
             </View>
-        </View>
-        <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-            <View style={{ paddingHorizontal: 5, paddingVertical: 5, flexDirection: 'row' }} >
+        );
+    };
 
 
-                <TouchableOpacity
-                    style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 1 ? `${COLORS.secondary}80` : 'white', }]}
-                    onPress={() => { handleSquarePress(1); setHideAgenda(!hideAgenda) }}
-                >
-                    <FontAwesome name="calendar-plus-o" size={25} color={COLORS.secondary} />
-                    <Text style={{ fontSize: 12, color: COLORS.secondary, fontWeight: '300', marginTop: 2 }}>Agendados</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 2 ? 'rgba(255, 0, 0, 0.5)' : 'white' }]}
-                    onPress={() => handleSquarePress(2)}
-                >
-                    <Icon name="calendar-minus-o" size={25} color='red' />
-                    <Text style={{ fontSize: 12, color: 'red', fontWeight: '300', marginTop: 2 }}>Cancelados</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 3 ? 'rgba(255, 165, 0, 0.5)' : 'white' }]}
-                    onPress={() => handleSquarePress(3)}
-                >
-                    <Icon name="calendar-o" size={25} color="orange" />
-                    <Text style={{ fontSize: 12, color: 'orange', fontWeight: '300', marginTop: 2 }}>Realizados</Text>
-                </TouchableOpacity><TouchableOpacity
-                    style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, borderEndColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 4 ? 'rgba(0, 0, 0, 0.5)' : 'white' }]}
-                    onPress={() => handleSquarePress(4)}
-                >
-                    <Icon name="calendar-o" size={25} color={COLORS.black} />
-                    <Text style={{ fontSize: 12, color: COLORS.black, fontWeight: '300', marginTop: 2 }}>Todos</Text>
-                </TouchableOpacity>
+    return (
+        <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
+            <View>
+                <StatusBar translucent backgroundColor="rgba(0,0,0,0)" />
+                <View style={styles.teste1}>
+                    <TouchableOpacity style={styles.teste2} onPress={() => navigation.navigate('TelaMenu')} >
+                        <Ionicons name="arrow-back" size={30} color={COLORS.secondary} style={{ marginTop: 13 }} />
+                    </TouchableOpacity>
+                    <View style={{ height: '100%', width: '80%', justifyContent: 'center', }}>
+                        <Text style={{ marginTop: 13, fontSize: 20, fontWeight: 'bold', color: COLORS.primary }}>Quadras Agendadas</Text>
+                    </View>
+                </View>
+            </View>
+            <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+                <View style={{ paddingHorizontal: 5, paddingVertical: 5, flexDirection: 'row' }} >
 
 
+                    <TouchableOpacity
+                        style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 1 ? `${COLORS.secondary}80` : 'white', }]}
+                        onPress={() => { handleSquarePress(1); setHideAgenda(!hideAgenda) }}
+                    >
+                        <FontAwesome name="calendar-plus-o" size={25} color={COLORS.secondary} />
+                        <Text style={{ fontSize: 12, color: COLORS.secondary, fontWeight: '300', marginTop: 2 }}>Agendados</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 2 ? 'rgba(255, 0, 0, 0.5)' : 'white' }]}
+                        onPress={() => handleSquarePress(2)}
+                    >
+                        <Icon name="calendar-minus-o" size={25} color='red' />
+                        <Text style={{ fontSize: 12, color: 'red', fontWeight: '300', marginTop: 2 }}>Cancelados</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 3 ? 'rgba(255, 165, 0, 0.5)' : 'white' }]}
+                        onPress={() => handleSquarePress(3)}
+                    >
+                        <Icon name="calendar-o" size={25} color="orange" />
+                        <Text style={{ fontSize: 12, color: 'orange', fontWeight: '300', marginTop: 2 }}>Realizados</Text>
+                    </TouchableOpacity><TouchableOpacity
+                        style={[styles.btn, { borderRightColor: "white", borderLeftColor: COLORS.LIGHT_GRAY, borderEndColor: COLORS.LIGHT_GRAY, backgroundColor: selectedSquare === 4 ? 'rgba(0, 0, 0, 0.5)' : 'white' }]}
+                        onPress={() => handleSquarePress(4)}
+                    >
+                        <Icon name="calendar-o" size={25} color={COLORS.black} />
+                        <Text style={{ fontSize: 12, color: COLORS.black, fontWeight: '300', marginTop: 2 }}>Todos</Text>
+                    </TouchableOpacity>
+                </View>
+                <Modal isVisible={isModalVisible} onBackdropPress={handleCloseModal}>
+                    {selectedAgendamento && (
+                        <View style={{ backgroundColor: 'white', paddingHorizontal: 10, paddingVertical: 10, borderRadius: 10 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Ionicons name="close" size={30} color={COLORS.black} onPress={handleCloseModal} />
+                                <Text style={{ fontSize: 20, fontWeight: '900', paddingLeft: 20 ,letterSpacing: 2}}>Tem Certeza que quer Cancelar</Text>
+                            </View>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
+                                <Text style={{fontSize: 19,}}>Quadra {selectedAgendamento.nomeDaQuadra}</Text>
+                                <Text style={{ fontSize: 19 ,fontWeight:'300'}}>{selectedAgendamento.data}</Text>
+                                <Text style={{ fontSize: 19 ,fontWeight:'300'}}>{selectedAgendamento.horario}</Text>
+                            </View>
+                            <TouchableOpacity style={{ height: 50, width: '100%', backgroundColor: 'red', borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginTop: 10 }} onPress={() => handleObterIdAgendamento(selectedAgendamento)}>
+                                <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>Cancelar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </Modal>
 
 
 
             </View>
-        </View>
-        <View style={{ height: 1, backgroundColor: COLORS.LIGHT_GRAY }} ></View>
-        <View style={{ flex: 1, backgroundColor: COLORS.default, padding: 10 }}>
-           
-
+            <View style={{ height: 1, backgroundColor: COLORS.LIGHT_GRAY }} ></View>
+            <View style={{ flex: 1, padding: 10, backgroundColor: COLORS.default }}>
                 <FlatList
-                     data={agendamentos.filter((item) => {
-                        // Retorna true se a quadra do agendamento pertence ao usuário logado
-                        return quadrasDoUsuario.some((quadra) => uid === item.user.uid);
-                    })}
+                    data={agendamentoData}
                     keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
+                    renderItem={renderItem}
                     ListEmptyComponent={() => (
                         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                             <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18, color: COLORS.black, fontStyle: 'italic' }}>
@@ -129,51 +229,12 @@ return (
                             </Text>
                         </View>
                     )}
-                    renderItem={({ item }) => {
-                        const quadraInfo = Quadras.find((quadra) => quadra.name === item.nomeDaQuadra);
-
-                        return (
-                            <View
-                                style={{
-                                    width: '100%',
-                                    height: 120,
-                                    borderRadius: 10,
-                                    borderWidth: 1,
-                                    borderColor: COLORS.LIGHT_GRAY,
-                                    overflow: 'hidden',
-                                    marginBottom: 10,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <View style={{ width: '30%', height: '100%' }}>
-                                    {quadraInfo && (
-                                        <ImageBackground style={{ height: '100%' }} source={quadraInfo.image} />
-                                    )}
-                                </View>
-                                <View style={{ flex: 1, marginLeft: 10, paddingVertical: 10, width: '100%' }}>
-                                    <View style={{ justifyContent: 'center', marginBottom: 5, width: '100%', paddingEnd: 20, flexDirection: 'column' }}>
-                                        <Text style={{ fontWeight: 'bold', fontSize: 20, letterSpacing: 1 }}>{item.nomeDaQuadra}</Text>
-                                        <Text>Data: {item.data}</Text>
-                                        <Text>Horario: {item.horario}</Text>
-                                        <Text>Local: {item.local.local}</Text>
-                                        <Text>Rua: {item.local.rua}</Text>
-                                        <Text>Detalhes: {item.detalhes}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        );
-                    }}
                 />
-           {/* 
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontStyle: 'italic' }}>Não existem quadras agendadas</Text>
-                </View>
-            */}
+            </View>
         </View>
-    </View>
-);
-}
+    );
+};
+
 
 const styles = StyleSheet.create({
     btn: {
