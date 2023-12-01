@@ -39,6 +39,7 @@ const TelaDetalhes = ({ route }) => {
         </View>
       </ImageBackground>
       <View style={{ marginTop: -20, backgroundColor: COLORS.white, borderTopLeftRadius: 20, borderTopRightRadius: 20, flex: 1, paddingHorizontal: 20, paddingVertical: 10, flexDirection: 'column' }}>
+        
         <Text style={{ fontSize: 18, marginBottom: 5, fontWeight: '600', color: COLORS.primary }}>Descrição</Text>
         <Text>{Quadras.details}</Text>
         <View style={{ marginTop: 10 }}>

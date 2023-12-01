@@ -28,7 +28,7 @@ const { width, height } = Dimensions.get('screen');
 const TelaPagamento = ({ route }) => {
     const navigation = useNavigation();
     const [isButtonClicked, setIsButtonClicked] = useState(false);
-    const { selectedTimes, selectedDate, nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco, teste } = route.params;
+    const { selectedTimes, selectedDate, nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco, teste ,selectedIds} = route.params;
 
     const calcularMultiplicacao = ({ preco, teste }) => {
         const resultado = teste * preco;
@@ -52,7 +52,7 @@ const TelaPagamento = ({ route }) => {
 
     const [observacoes, setObservacoes] = useState('');
 
-    console.log(formattedDate);
+    console.log(selectedIds);
 
     const handleAgendarClick = async () => {
         try {
@@ -86,6 +86,7 @@ const TelaPagamento = ({ route }) => {
                     nomeDaQuadra: nomeDaQuadra,
                     horario: `${menorHorario} às ${maiorHorario}`,
                     data: formattedDate,
+                    idHorario: selectedIds,
                     local: {
                         local: localDaQuadra,
                         rua: ruaDaQuadra,

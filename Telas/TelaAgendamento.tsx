@@ -1,21 +1,21 @@
 
 import { View, StyleSheet, SafeAreaView, TouchableOpacity, FlatList, Text } from 'react-native';
 import moment from 'moment';
-import 'moment/locale/pt-br'; 
+import 'moment/locale/pt-br';
 import CalendarStrip from 'react-native-calendar-strip';
 import Icon from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StatusBar } from 'expo-status-bar';
 import COLORS from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../constants/Header';
 import Quadras from '../constants/Quadras';
+import { getFirestore, collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 
 
+const TelaAgendamento = ({ route }) => {
 
-const TelaAgendamento = ({route}) => {
-    
     const today = moment();
     const datesBlacklist = [];
     for (let i = 1; i < 31; i++) {
@@ -28,24 +28,24 @@ const TelaAgendamento = ({route}) => {
     const [selectedCount, setSelectedCount] = useState(0);
 
     const [selectedDate, setSelectedDate] = useState(moment());
-
     const [data, setData] = useState([
-        { id: '1', text: '08:00 às 09:00', selected: false, habilitado:false },
-        { id: '2', text: '09:00 às 10:00', selected: false, habilitado:true },
-        { id: '3', text: '10:00 às 11:00', selected: false, habilitado:true},
-        { id: '4', text: '11:00 às 12:00', selected: false, habilitado:true },
-        { id: '5', text: '12:00 às 13:00', selected: false, habilitado:true },
-        { id: '6', text: '13:00 às 14:00', selected: false, habilitado:true},
-        { id: '7', text: '14:00 às 15:00', selected: false, habilitado:true },
-        { id: '8', text: '15:00 às 16:00', selected: false, habilitado:true },
-        { id: '9', text: '16:00 às 17:00', selected: false, habilitado:true },
-        { id: '10', text: '18:00 às 19:00', selected: false, habilitado:true },
-        { id: '11', text: '19:00 às 20:00', selected: false, habilitado:true },
-        { id: '12', text: '21:00 às 22:00', selected: false, habilitado:true },
+        { id: '1', text: '08:00 às 09:00', selected: false, habilitado: true },
+        { id: '2', text: '09:00 às 10:00', selected: false, habilitado: true },
+        { id: '3', text: '10:00 às 11:00', selected: false, habilitado: true },
+        { id: '4', text: '11:00 às 12:00', selected: false, habilitado: true },
+        { id: '5', text: '12:00 às 13:00', selected: false, habilitado: true },
+        { id: '6', text: '13:00 às 14:00', selected: false, habilitado: true },
+        { id: '7', text: '14:00 às 15:00', selected: false, habilitado: true },
+        { id: '8', text: '15:00 às 16:00', selected: false, habilitado: true },
+        { id: '9', text: '16:00 às 17:00', selected: false, habilitado: true },
+        { id: '10', text: '18:00 às 19:00', selected: false, habilitado: true },
+        { id: '11', text: '19:00 às 20:00', selected: false, habilitado: true },
+        { id: '12', text: '21:00 às 22:00', selected: false, habilitado: true },
     ]);
-    
+
+    const [selectedIds, setSelectedIds] = useState([]);
+
     const handleSelectItem = (itemId) => {
-        
         setData((prevData) => {
             const newData = prevData.map((item) =>
                 item.id === itemId ? { ...item, selected: !item.selected } : item
@@ -55,6 +55,9 @@ const TelaAgendamento = ({route}) => {
             setSelectedCount(selectedItems.length);
 
             if (selectedItems.length > 0) {
+                const ids = selectedItems.map((item) => item.id);
+                setSelectedIds(ids);
+
                 const minSelectedIndex = Math.min(
                     ...selectedItems.map((item) => Number(item.id))
                 );
@@ -63,14 +66,12 @@ const TelaAgendamento = ({route}) => {
                 );
 
                 newData.forEach((item) => {
-                    // Habilita os horários adjacentes aos horários mínimo e máximo selecionados
                     item.habilitado = (
                         Math.abs(Number(item.id) - minSelectedIndex) === 1 ||
                         Math.abs(Number(item.id) - maxSelectedIndex) === 1
                     );
                 });
             } else {
-                // Se nenhum horário estiver selecionado, habilitar todos
                 newData.forEach((item) => {
                     item.habilitado = true;
                 });
@@ -79,11 +80,12 @@ const TelaAgendamento = ({route}) => {
             return newData;
         });
     };
+    
 
     const handleDateSelected = (date) => {
         // Formatando a data no padrão desejado
         const formattedDate = moment(selectedDate).locale('pt-br').format('dddd, DD [de] MMMM [de] YYYY');
-        console.log(formattedDate); 
+        console.log(formattedDate);
 
         setSelectedDate(date);
         const newData = data.map((item) => ({ ...item, selected: false }));
@@ -91,50 +93,115 @@ const TelaAgendamento = ({route}) => {
         setData(newData);
         setSelectedCount(0);
     };
-    
+
     const handleGoToPayment = () => {
         const selectedTimes = data
             .filter(item => item.selected)
             .map(item => item.text);
-    
-        // Obter a data formatada no padrão desejado
+
+        
         const formattedDate = moment(selectedDate).locale('pt-br').format('dddd, DD MMMM YYYY');
-    
-        const { nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco } = route.params;
+
+        const { nomeDaQuadra, localDaQuadra, ruaDaQuadra, preco, } = route.params;
         const teste = selectedCount;
-    
+
         console.log(formattedDate);
-    
-        // Certifique-se de que a data seja passada no formato ISOString para a próxima tela
+         
+        
         navigation.navigate("TelaPagamento", {
             ruaDaQuadra,
             localDaQuadra,
             nomeDaQuadra,
             selectedTimes,
-            selectedDate: selectedDate.toISOString(), // Convertendo para ISOString
+            selectedDate: selectedDate.toISOString(), 
             preco,
             teste,
+            selectedIds,
         });
     };
-    {/* 
+    const [agendamentos, setAgendamentos] = useState([]);
+    const [quadrasDoUsuario, setQuadrasDoUsuario] = useState([]);
+
     useEffect(() => {
-        const fetchDatesAgendadas = async () => {
-            const datesFromDB = await getDatesAgendadas();
-            setDatesAgendadas(datesFromDB);
+        const obterAgendamentos = async () => {
+            try {
+                
+                const firestore = getFirestore();
+                
+                const agendamentosCollection = collection(firestore, 'agendamentos');
+                const querySnapshot = await getDocs(agendamentosCollection);
+
+                const agendamentosArray = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    agendamentosArray.push(data);
+                    console.log("idHorario do banco:", data.idHorario);
+                });
+
+                setAgendamentos(agendamentosArray);
+            } catch (error) {
+                console.error('Erro ao obter agendamentos:', error);
+            }
         };
-    
-        fetchDatesAgendadas();
+
+        obterAgendamentos();
     }, []);
-*/}
-    
 
 
-    
+
+    useEffect(() => {
+        console.log("Quadras do Usuário:", quadrasDoUsuario);
+        console.log("Quadras do Usuário:", agendamentos.some((agendamento) => agendamento.idHorario));
+        console.log("Quadras do Usuário:", agendamentos.some((agendamento) => agendamento.data));
+    }, [quadrasDoUsuario]);
+
+
+    const selectedDateISOString = moment(selectedDate).locale('pt-br').format('dddd, DD MMMM YYYY');
+    console.log(selectedDateISOString);
+    const { nomeDaQuadra } = route.params;
+    let horariosNaoAgendados;
+
+    if (agendamentos.some(agendamento => agendamento.nomeDaQuadra === nomeDaQuadra)) {
+        if (agendamentos.some(agendamento => agendamento.data === selectedDateISOString)) {
+            console.log('Há agendamento para a data selecionada.');
+
+
+            const agendamentosParaData = agendamentos.filter(agendamento => agendamento.data === selectedDateISOString);
+
+
+            const horariosDoBanco = agendamentosParaData.map(agendamento => agendamento.idHorario);
+            const horariosDoBancoFlat = horariosDoBanco.flat();
+
+            console.log(horariosDoBancoFlat);
+
+
+            horariosNaoAgendados = data.filter(item => !horariosDoBancoFlat.includes(item.id));
+        } else {
+            console.log('Nenhum agendamento para a data selecionada.');
+
+            
+            horariosNaoAgendados = data;
+        }
+    } else {
+        console.log(`Nenhum agendamento para a quadra ${nomeDaQuadra}.`);
+        horariosNaoAgendados = data;
+    }
+
+    console.log('Variável final:', horariosNaoAgendados);
+
+
+
+
+
+
+
+
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-            
-           <Header title="Selecione o Horario " />
+
+            <Header title="Selecione o Horario" />
             <View style={{ height: 112, }}>
                 <CalendarStrip
                     scrollable
@@ -154,13 +221,13 @@ const TelaAgendamento = ({route}) => {
                     datesBlacklist={datesBlacklist}
                     minDate={pastDate.toDate()}
                     startingDate={start}
-                    onDateSelected={handleDateSelected} 
+                    onDateSelected={handleDateSelected}
                     selectedDate={selectedDate}
                 />
             </View>
             <View style={{ backgroundColor: "#f3f3f3", flex: 1 }}>
                 <FlatList
-                    data={data}
+                    data={horariosNaoAgendados}
                     renderItem={({ item }) => (
                         <TouchableOpacity style={styles.datas} onPress={() => handleSelectItem(item.id)} disabled={!item.habilitado}>
                             <View style={{ height: "100%", width: "10%", alignItems: 'center', justifyContent: 'center' }}>
@@ -180,7 +247,7 @@ const TelaAgendamento = ({route}) => {
             {selectedCount > 0 &&
                 <View style={styles.container}>
                     <Text style={styles.headerText}>{`${selectedCount} Horários selecionados`}</Text>
-                    <TouchableOpacity style={styles.button}  onPress={handleGoToPayment}>
+                    <TouchableOpacity style={styles.button} onPress={handleGoToPayment}>
                         <Icon name="calendar-check-o" size={30} color={COLORS.secondary} />
                     </TouchableOpacity>
                 </View>
@@ -208,7 +275,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.LIGHT_GRAY,
         flexDirection: 'row',
-       
+
     },
 
     informacoes: {
